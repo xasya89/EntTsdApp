@@ -1,0 +1,12 @@
+Лабораторная по созданию room с viewmodel
+https://developer.android.com/codelabs/android-room-with-a-view-kotlin#16
+ROOM
+https://developer.android.com/training/data-storage/room
+Миграция ROOM
+https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
+
+
+Asynchronous Flow
+https://kotlinlang.org/docs/flow.html
+Guide to app architecture
+https://developer.android.com/topic/architecture
