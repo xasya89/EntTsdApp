@@ -46,10 +46,7 @@ class LoginFragment : Fragment() {
 
 
         binding.settingsBtn.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(R.id.fragmentContainerView, SettingsFragment.newInstance())
-                setReorderingAllowed(true)
-            }
+            openSettingsFrament()
         }
 
         binding.loginBtn.setOnClickListener {
@@ -71,20 +68,25 @@ class LoginFragment : Fragment() {
                 binding.settingsBtn.text = it.ServerHost.toString()
                 HOSTED_NAME = "http://"+it.ServerHost.toString()+":5226/"
             }
-
-            val loginApi = LoginApi.getInstance(HOSTED_NAME)
-            loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-                LoginRepository((loginApi))
-            )).get(LoginViewModel::class.java)
-            loginViewModel.login.observe(viewLifecycleOwner, Observer {
-                if(it.id == 0)
-                    return@Observer
-                worker=it
-                parentFragmentManager.commit {
-                    replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
-                    setReorderingAllowed(true)
-                }
-            })
+            try{
+                val loginApi = LoginApi.getInstance(HOSTED_NAME)
+                loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
+                    LoginRepository((loginApi))
+                )).get(LoginViewModel::class.java)
+                loginViewModel.login.observe(viewLifecycleOwner, Observer {
+                    if(it.id == 0)
+                        return@Observer
+                    worker=it
+                    parentFragmentManager.commit {
+                        replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                        setReorderingAllowed(true)
+                    }
+                })
+            }
+            catch (ex: Exception){
+                Log.e("login api error",ex.message.toString())
+                openSettingsFrament()
+            }
         })
 
         clearBarCode()
@@ -92,6 +94,13 @@ class LoginFragment : Fragment() {
 
     fun clearBarCode(){
         (activity as MainActivity).clearBarCode()
+    }
+
+    fun openSettingsFrament(){
+        parentFragmentManager.commit {
+            replace(R.id.fragmentContainerView, SettingsFragment.newInstance())
+            setReorderingAllowed(true)
+        }
     }
 
     companion object {
