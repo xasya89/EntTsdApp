@@ -1,45 +1,72 @@
 package com.example.entshptapplication.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.entshptapplication.communications.UpakApi
+import com.example.entshptapplication.databaseModels.UpakNaryadDb
 import com.example.entshptapplication.models.FindNaryadModel
 import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.models.RequestUpakModel
 import com.example.entshptapplication.models.ResponseMessageModel
+import com.example.entshptapplication.repository.UpakDbRepository
+import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Date
 import kotlin.math.log
 
-class UpakViewModel constructor(private val upakApi: UpakApi) : ViewModel() {
+class UpakViewModel (private val upakApi: UpakApi, private val upakDbRepository: UpakDbRepository, private var onError: ((String)-> Unit)) : ViewModel() {
 
     val upakList = MutableLiveData<List<Naryad>>(listOf())
-    val responseError = MutableLiveData<String>("")
+
+
+    fun loadFromDb(){
+        viewModelScope.launch {
+            upakDbRepository.getList().collect{
+                val naryads = mutableListOf<Naryad>()
+                for(naryad in it)
+                    naryads.add(0, Naryad(
+                        id = naryad.naryadId,
+                        doorId = naryad.doorId,
+                        numInOrder = naryad.numInOrder,
+                        num = naryad.num,
+                        note = naryad.note,
+                        shtild = naryad.shtild,
+
+                        upakNaryadCompliteId = naryad.upakNaryadCompliteId,
+                        upakCost = naryad.upakCost,
+                        upakDate = null, upakWorker = null, upakWorkerId = null,
+                        shptNaryadCompliteId = null, shptWorkerId = null, shptDate = null, shptWorker = null, shptCost = 0f
+                    ));
+
+                Log.e("load data", it.size.toString());
+                upakList.value = naryads
+            }
+        }
+    }
 
     fun scan(barcode:String){
         val resp = upakApi.Scan(barcode)
         resp.enqueue(object : Callback<Naryad>{
             override fun onResponse(call: Call<Naryad>, response: Response<Naryad>) {
-                if(response.isSuccessful){
-                    val naryad = response.body()
-                    if(naryad!=null){
-                        var flag = false;
-                        if(upakList.value!=null)
-                            for (n in upakList.value?.iterator()!!)
-                                if(n.id==naryad.id)
-                                    flag = true
-                        if(!flag)
-                            upakList.value = upakList.value?.plus(naryad) ?: listOf(naryad)
-
-                    }
+                if (!response.isSuccessful) {
+                    onError(response.errorBody()?.string() ?: "")
+                    return
                 }
+                val naryad = response.body()
+                if (naryad == null)
+                    return
+                if(upakList.value?.none{it.id==naryad.id} ?: false)
+                    return
+                addInDb(naryad)
+
+                upakList.value = upakList.value?.plus(naryad)
             }
 
             override fun onFailure(call: Call<Naryad>, t: Throwable) {
-                responseError.value=t.message
+                onError(t.message.toString())
             }
 
         })
@@ -59,38 +86,68 @@ class UpakViewModel constructor(private val upakApi: UpakApi) : ViewModel() {
                     upakNaryadCompliteId = null, upakWorker = null, upakWorkerId = null, upakDate = null, upakCost = findNaryad.upakCost,
                     shptNaryadCompliteId = null, shptWorker = null, shptWorkerId = null, shptDate = null, shptCost = findNaryad.shptCost
                 )
+
+                for(naryad in naryads)
+                    addInDb(naryad)
                 naryads = naryads.plus(newNaryad)
             }
+
         upakList.value = naryads ?: listOf()
     }
 
-    fun save(workerId: Int){
+    private fun addInDb(naryad: Naryad){
+        viewModelScope.launch {
+            upakDbRepository.Insert(UpakNaryadDb(
+                id=0,
+                naryadId = naryad.id,
+                doorId = naryad.doorId,
+                numInOrder = naryad.numInOrder,
+                num = naryad.num,
+                note = naryad.note,
+                shtild = naryad.shtild,
+                upakNaryadCompliteId = naryad.id,
+                upakCost = naryad.upakCost,
+
+                upakWorkerId = 0, upakDate = Date()
+            ))
+        }
+    }
+
+    fun save(workerId: Int) {
         var naryadsId = listOf<Int>()
-        for(upak in upakList.value?.listIterator()!!)
+        for (upak in upakList.value?.listIterator()!!)
             naryadsId = naryadsId.plus(upak.id)
         val resp = upakApi.Save(RequestUpakModel(naryads = naryadsId, workerId = workerId))
-        resp.enqueue(object : Callback<ResponseMessageModel>{
+        resp.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(
-                call: Call<ResponseMessageModel>,
-                response: Response<ResponseMessageModel>
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
             ) {
-                val body = response.body()
-                if(body?.status=="error")
-                    responseError.value = body.message
-                if(body?.status=="ok") {
-                    responseError.value = "ok"
-                    clearUpakList()
+                if (!response.isSuccessful) {
+                    onError(response.errorBody()?.string() ?: "")
+                    return
                 }
+
+                clearUpakList()
             }
 
-            override fun onFailure(call: Call<ResponseMessageModel>, t: Throwable) {
-                responseError.value= t.message
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                onError(t.message.toString())
             }
 
         })
     }
 
     fun clearUpakList(){
+        viewModelScope.launch {
+            upakDbRepository.clear()
+        }
         upakList.value = listOf<Naryad>()
+    }
+}
+
+class UpakViewModelFactory constructor(private val upakApi: UpakApi, private val repository: UpakDbRepository, var onError: ((String)-> Unit)): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return UpakViewModel(upakApi, repository, onError) as T
     }
 }

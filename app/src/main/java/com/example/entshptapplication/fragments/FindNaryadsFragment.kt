@@ -14,6 +14,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.entshptapplication.R
+import com.example.entshptapplication.TSDApplication
 import com.example.entshptapplication.adapters.FindNaryadsRecycleAdapter
 import com.example.entshptapplication.communications.FindNaryadsApi
 import com.example.entshptapplication.communications.LoginApi
@@ -91,8 +92,12 @@ class FindNaryadsFragment : Fragment() {
         val loginApi = LoginApi.getInstance(HOSTED_NAME)
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(LoginRepository(loginApi))).get(LoginViewModel::class.java)
 
-        var upakApi = UpakApi.getInstance(HOSTED_NAME)
-        upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(upakApi)).get(UpakViewModel::class.java)
+        upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
+            UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository,
+            {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
+        )).get(UpakViewModel::class.java)
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
         shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(shptApi,

@@ -17,12 +17,6 @@ class LoginViewModelFactory constructor(private val repository: LoginRepository)
     }
 }
 
-class UpakViewModelFactory constructor(private val upakApi: UpakApi): ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return UpakViewModel(upakApi) as T
-    }
-}
-
 class ShptViewModelFactory constructor(private val shptApi: ShptApi, var onError: ((String)-> Unit)? = null): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ShptViewModel(shptApi, onError) as T

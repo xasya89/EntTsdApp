@@ -24,6 +24,8 @@ import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.*
 import android.media.MediaPlayer
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
+import com.example.entshptapplication.TSDApplication
 
 class UpakListFragment : Fragment() {
 
@@ -34,12 +36,11 @@ class UpakListFragment : Fragment() {
     private var adapter = UpakRecycleAdapter()
     private lateinit var soundPlayer: SoundPlayer
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        soundPlayer = SoundPlayer(requireContext())
-
         binding = FragmentUpakListBinding.inflate(inflater)
         adapter.onItemClick = {naryad -> showDialog(naryad) }
         binding.upakListRecycle.adapter = adapter
@@ -71,23 +72,25 @@ class UpakListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginApi = LoginApi.getInstance(HOSTED_NAME)
+        soundPlayer = SoundPlayer(context)
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginRepository(loginApi)
+            LoginRepository(LoginApi.getInstance(HOSTED_NAME))
         )
         ).get(LoginViewModel::class.java)
 
-        var upakApi = UpakApi.getInstance(HOSTED_NAME)
-        upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(upakApi)).get(UpakViewModel::class.java)
+        upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
+            UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository,
+            {
+                soundPlayer.playError()
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            }
+        )).get(UpakViewModel::class.java)
+        upakViewModel.loadFromDb()
         //upakViewModel = UpakViewModel(upakApi)
         upakViewModel.upakList.observe(viewLifecycleOwner, {
             adapter.setNaryads(it)
             binding.summaryCount.text = it.size.toString()
             binding.summaryCost.text = it.sumOf{ it.upakCost.toDouble() }.toString()
-        })
-        upakViewModel.responseError.observe(viewLifecycleOwner,{
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-            soundPlayer.playError()
         })
 
         keyListenerViewModel = ViewModelProvider(activity?.viewModelStore!!, KeyListenerViewModelFactory()).get(KeyListenerViewModel::class.java)
@@ -119,13 +122,6 @@ class UpakListFragment : Fragment() {
         btnClose.setOnClickListener {
             dialog.dismiss()
         }
-        //val noBtn = dialog.findViewById(R.id.noBtn) as TextView
-        /*
-        yesBtn.setOnClickListener {
-            dialog.dismiss()
-        }
-         */
-        //noBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 

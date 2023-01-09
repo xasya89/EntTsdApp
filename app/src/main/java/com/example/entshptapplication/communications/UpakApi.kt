@@ -4,6 +4,7 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.models.RequestUpakModel
 import com.example.entshptapplication.models.ResponseMessageModel
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,7 +16,7 @@ interface UpakApi {
     fun Scan(@Body barcode: String): Call<Naryad>
 
     @POST("api/upaklist/save")
-    fun Save(@Body model: RequestUpakModel): Call<ResponseMessageModel>
+    fun Save(@Body model: RequestUpakModel): Call<ResponseBody>
 
     companion object {
         var upakApi: UpakApi? = null
