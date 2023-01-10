@@ -21,27 +21,32 @@ class UpakViewModel (private val upakApi: UpakApi, private val upakDbRepository:
 
     val upakList = MutableLiveData<List<Naryad>>(listOf())
 
-
     fun loadFromDb(){
         viewModelScope.launch {
-            upakDbRepository.getList().collect{
+            upakDbRepository.getList().collect {
                 val naryads = mutableListOf<Naryad>()
-                for(naryad in it)
-                    naryads.add(0, Naryad(
-                        id = naryad.naryadId,
-                        doorId = naryad.doorId,
-                        numInOrder = naryad.numInOrder,
-                        num = naryad.num,
-                        note = naryad.note,
-                        shtild = naryad.shtild,
+                for (naryad in it)
+                    naryads.add(
+                        0, Naryad(
+                            id = naryad.naryadId,
+                            doorId = naryad.doorId,
+                            numInOrder = naryad.numInOrder,
+                            num = naryad.num,
+                            note = naryad.note,
+                            shtild = naryad.shtild,
 
-                        upakNaryadCompliteId = naryad.upakNaryadCompliteId,
-                        upakCost = naryad.upakCost,
-                        upakDate = null, upakWorker = null, upakWorkerId = null,
-                        shptNaryadCompliteId = null, shptWorkerId = null, shptDate = null, shptWorker = null, shptCost = 0f
-                    ));
-
-                Log.e("load data", it.size.toString());
+                            upakNaryadCompliteId = naryad.upakNaryadCompliteId,
+                            upakCost = naryad.upakCost,
+                            upakDate = null,
+                            upakWorker = null,
+                            upakWorkerId = null,
+                            shptNaryadCompliteId = null,
+                            shptWorkerId = null,
+                            shptDate = null,
+                            shptWorker = null,
+                            shptCost = 0f
+                        )
+                    )
                 upakList.value = naryads
             }
         }
@@ -72,27 +77,30 @@ class UpakViewModel (private val upakApi: UpakApi, private val upakDbRepository:
         })
     }
 
-    fun addFindCheckedNaryads(findNaryads: List<FindNaryadModel>){
+    fun addFindCheckedNaryads(findNaryads: List<FindNaryadModel>, onComplite: (()->Unit) ) {
         var naryads = upakList.value
-        for (findNaryad in findNaryads.filter { it.onChecked })
-            if(naryads!!.none { it.id==findNaryad.id }){
-                val newNaryad = Naryad(
-                    id=findNaryad.id,
-                    doorId = 0,
-                    numInOrder = findNaryad.numInOrder,
-                    num = findNaryad.naryadNum,
-                    note = findNaryad.note ?: "",
-                    shtild = findNaryad.shtild,
-                    upakNaryadCompliteId = null, upakWorker = null, upakWorkerId = null, upakDate = null, upakCost = findNaryad.upakCost,
-                    shptNaryadCompliteId = null, shptWorker = null, shptWorkerId = null, shptDate = null, shptCost = findNaryad.shptCost
-                )
-
-                for(naryad in naryads)
-                    addInDb(naryad)
-                naryads = naryads.plus(newNaryad)
-            }
-
-        upakList.value = naryads ?: listOf()
+        val findNaryads_ = findNaryads.filter { x-> x.onChecked and (naryads?.none{n->n.id==x.id} ?: true) }
+        val tmplist = mutableListOf<Naryad>()
+        for(naryad in findNaryads_)
+            tmplist.add(Naryad(
+                id = naryad.id,
+                doorId = 0,
+                numInOrder = naryad.numInOrder,
+                num = naryad.naryadNum,
+                note = naryad.note ?: "",
+                shtild = naryad.shtild,
+                upakNaryadCompliteId = null,
+                upakWorker = null,
+                upakWorkerId = null,
+                upakDate = null,
+                upakCost = naryad.upakCost,
+                shptNaryadCompliteId = null,
+                shptWorker = null,
+                shptWorkerId = null,
+                shptDate = null,
+                shptCost = naryad.shptCost
+            ))
+        addInDb(tmplist, onComplite)
     }
 
     private fun addInDb(naryad: Naryad){
@@ -110,6 +118,30 @@ class UpakViewModel (private val upakApi: UpakApi, private val upakDbRepository:
 
                 upakWorkerId = 0, upakDate = Date()
             ))
+
+        }
+    }
+
+    private fun addInDb(naryads: List<Naryad>, onComplite: (() -> Unit)? = null) {
+        viewModelScope.launch {
+            for (naryad in naryads)
+                upakDbRepository.Insert(
+                    UpakNaryadDb(
+                        id = 0,
+                        naryadId = naryad.id,
+                        doorId = naryad.doorId,
+                        numInOrder = naryad.numInOrder,
+                        num = naryad.num,
+                        note = naryad.note,
+                        shtild = naryad.shtild,
+                        upakNaryadCompliteId = naryad.id,
+                        upakCost = naryad.upakCost,
+
+                        upakWorkerId = 0, upakDate = Date()
+                    )
+                )
+            upakList.value = naryads.plus(naryads)
+            onComplite?.invoke()
         }
     }
 

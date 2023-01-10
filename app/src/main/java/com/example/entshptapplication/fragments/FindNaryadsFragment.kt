@@ -130,11 +130,12 @@ class FindNaryadsFragment : Fragment() {
         val naryads = findNaryadsViewModel.findNaryadList.value?.filter { it.onChecked } ?: listOf()
         when(paramTypeParentScreen){
             FIND_NARYAD_PARENT_UPAK -> {
-                upakViewModel.addFindCheckedNaryads(naryads)
-                parentFragmentManager.commit {
-                    replace(R.id.fragmentContainerView, UpakListFragment.newInstance())
-                    setReorderingAllowed(true)
-                }
+                upakViewModel.addFindCheckedNaryads(naryads, {
+                    parentFragmentManager.commit {
+                        replace(R.id.fragmentContainerView, UpakListFragment.newInstance())
+                        setReorderingAllowed(true)
+                    }
+                })
             }
             FIND_NARYAD_PARENT_SHPT -> {
                 var idNaryads = mutableListOf<Int>()

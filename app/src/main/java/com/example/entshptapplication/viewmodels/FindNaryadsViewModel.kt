@@ -25,7 +25,6 @@ class FindNaryadsViewModel constructor(private val findNaryadsApi: FindNaryadsAp
             override fun onFailure(call: Call<List<FindNaryadModel>>, t: Throwable) {
                 TODO("Not yet implemented")
             }
-
         })
     }
 
