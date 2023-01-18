@@ -34,28 +34,30 @@ class ActionsFragment : Fragment() {
         binding = FragmentActionsBinding.inflate(inflater)
 
         binding.upakActionBtn.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(R.id.fragmentContainerView, UpakListFragment.newInstance())
-                setReorderingAllowed(true)
-            }
+            transitionToFragment(UpakListFragment.newInstance())
         }
 
         binding.actListActionBtn.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(R.id.fragmentContainerView, ActShptFragment.newInstance())
-                setReorderingAllowed(true)
-            }
+            transitionToFragment(ActShptFragment.newInstance())
+        }
+
+        binding.statActionBtn.setOnClickListener {
+            transitionToFragment(StatFragment.newInstance())
         }
 
         binding.exitActionBtn.setOnClickListener {
             loginViewModel.logOut()
-            parentFragmentManager.commit {
-                replace(R.id.fragmentContainerView, LoginFragment.newInstance())
-                setReorderingAllowed(true)
-            }
+            transitionToFragment(LoginFragment.newInstance())
         }
 
         return binding.root
+    }
+
+    fun transitionToFragment(fragment: Fragment){
+        parentFragmentManager.commit {
+            replace(R.id.fragmentContainerView, fragment)
+            setReorderingAllowed(true)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
