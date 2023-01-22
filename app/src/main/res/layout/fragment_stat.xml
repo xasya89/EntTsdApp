@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,64 +9,231 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        app:cardBackgroundColor="@color/toolbar_blue">
 
-        <TableLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Статистика"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Заработано с" />
+            <TextView
+                android:id="@+id/statChooseDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView28" />
 
-                <TextView
-                    android:id="@+id/statActDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="TextView" />
-            </TableRow>
+            <ImageButton
+                android:id="@+id/statCloseBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/btn_blue"
+                android:src="@drawable/ic_baseline_close_30_red"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+            <ImageButton
+                android:id="@+id/statChooseDateBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="11dp"
+                android:backgroundTint="@color/btn_blue"
+                android:src="@drawable/ic_baseline_calendar_month_30_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textView15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/statBalancePrevSalary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="TextView" />
-            </TableRow>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="30dp">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </TableLayout>
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"
+                android:text="Упаковано"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/statSummaryUpakCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/textView30"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="шт."
+                app:layout_constraintStart_toEndOf="@+id/statSummaryUpakCount"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/statSummaryUpakCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/textView36"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView38"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="р."
+                app:layout_constraintStart_toEndOf="@+id/statSummaryUpakCost"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView39"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"
+                android:text="Погрузка"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView30" />
+
+            <TextView
+                android:id="@+id/statSummaryShptCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/textView39"
+                app:layout_constraintTop_toBottomOf="@+id/statSummaryUpakCount" />
+
+            <TextView
+                android:id="@+id/textView42"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="шт"
+                app:layout_constraintStart_toEndOf="@+id/statSummaryShptCount"
+                app:layout_constraintTop_toBottomOf="@+id/textView36" />
+
+            <TextView
+                android:id="@+id/statSummaryShptCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/textView42"
+                app:layout_constraintTop_toBottomOf="@+id/statSummaryUpakCost" />
+
+            <TextView
+                android:id="@+id/textView45"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="р."
+                app:layout_constraintStart_toEndOf="@+id/statSummaryShptCost"
+                app:layout_constraintTop_toBottomOf="@+id/textView38" />
+
+            <TextView
+                android:id="@+id/textView46"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="Начислено"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView39" />
+
+            <TextView
+                android:id="@+id/statSummeryPaymentPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/textView46"
+                app:layout_constraintTop_toBottomOf="@+id/statSummaryShptCount" />
+
+            <TextView
+                android:id="@+id/textView49"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="Вычтено"
+                app:layout_constraintStart_toEndOf="@+id/statSummeryPaymentPlus"
+                app:layout_constraintTop_toBottomOf="@+id/statSummaryShptCost" />
+
+            <TextView
+                android:id="@+id/statSummeryPaymentMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:text="TextView"
+                app:layout_constraintStart_toEndOf="@+id/textView49"
+                app:layout_constraintTop_toBottomOf="@+id/textView45" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/statTabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="25dp"
+        app:tabPaddingEnd="2dp"
+        app:tabPaddingStart="2dp" />
+
+    <EditText
+        android:id="@+id/editTextTextPersonName2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Поиск наряда"
+        android:textSize="10sp"
+        android:inputType="textPersonName" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/statViewPager"

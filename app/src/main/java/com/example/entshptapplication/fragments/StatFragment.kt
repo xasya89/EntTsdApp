@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -52,6 +54,7 @@ class StatFragment : Fragment() {
             override fun onTabReselected (tab: TabLayout.Tab) {
             }
         })
+        addExitListener()
         return binding.root
     }
 
@@ -64,20 +67,25 @@ class StatFragment : Fragment() {
 
         statViewModel.getSummary(loginViewModel.login.value?.id ?: 0)
         statViewModel.summary.observe(viewLifecycleOwner,{
-            binding.statActDate.text = it.dateWithStr
-            binding.statBalancePrevSalary.text = it.initialCost.toString()
+            binding.statChooseDate.text = it.dateWithStr
+            binding.statSummaryUpakCount.text = it.upakCount.toString()
+            binding.statSummaryUpakCost.text = it.upakCost.toString()
+            binding.statSummaryShptCount.text = it.shptCount.toString()
+            binding.statSummaryShptCost.text = it.shptCost.toString()
+            binding.statSummeryPaymentPlus.text = it.paymentsPlus.toString()
+            binding.statSummeryPaymentMinus.text = it.paymentsMinus.toString()
         })
     }
 
-    inner class StatPageCollectionAdapter(fragment: Fragment): FragmentStateAdapter(fragment){
-        override fun getItemCount(): Int {
-            TODO("Not yet implemented")
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            TODO("Not yet implemented")
-        }
-
+    fun addExitListener(){
+        binding.statCloseBtn.setOnClickListener(object : OnClickListener{
+            override fun onClick(p0: View?) {
+                parentFragmentManager.commit {
+                    replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                    setReorderingAllowed(true)
+                }
+            }
+        })
     }
 
     companion object {
