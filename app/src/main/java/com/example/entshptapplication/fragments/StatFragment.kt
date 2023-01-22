@@ -1,12 +1,14 @@
 package com.example.entshptapplication.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.entshptapplication.R
 import com.example.entshptapplication.adapters.StatViewPageAdapter
 import com.example.entshptapplication.communications.LoginApi
@@ -18,6 +20,8 @@ import com.example.entshptapplication.viewmodels.LoginViewModel
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 import com.example.entshptapplication.viewmodels.StatViewModel
 import com.example.entshptapplication.viewmodels.StatViewModelFactory
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 
 class StatFragment : Fragment() {
@@ -40,7 +44,14 @@ class StatFragment : Fragment() {
             else
                 tab.text = "Погрузка"
         }.attach()
-
+        binding.statTabs.addOnTabSelectedListener (object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected (tab: TabLayout.Tab) {
+            }
+            override fun onTabUnselected (tab: TabLayout.Tab) {
+            }
+            override fun onTabReselected (tab: TabLayout.Tab) {
+            }
+        })
         return binding.root
     }
 
@@ -54,10 +65,20 @@ class StatFragment : Fragment() {
         statViewModel.getSummary(loginViewModel.login.value?.id ?: 0)
         statViewModel.summary.observe(viewLifecycleOwner,{
             binding.statActDate.text = it.dateWithStr
-            binding.statBalancePrevSalary.text = it.balancePrevSalary.toString()
+            binding.statBalancePrevSalary.text = it.initialCost.toString()
         })
     }
 
+    inner class StatPageCollectionAdapter(fragment: Fragment): FragmentStateAdapter(fragment){
+        override fun getItemCount(): Int {
+            TODO("Not yet implemented")
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            TODO("Not yet implemented")
+        }
+
+    }
 
     companion object {
         @JvmStatic

@@ -1,6 +1,7 @@
 package com.example.entshptapplication.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +19,7 @@ class StatNaryadsFragment : Fragment() {
 
     private var statType: String = ""
     private lateinit var binding: FragmentStatNaryadsBinding
-    private var adapter = StatRecycleAdapter()
+    //private var adapter = StatRecycleAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +33,19 @@ class StatNaryadsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentStatNaryadsBinding.inflate(inflater)
+        binding.textView12.text = statType + (0..100).random().toString()
+        /*
+        binding = FragmentStatNaryadsBinding.inflate(inflater)
 
         binding.statRecycleView.adapter = adapter
         binding.statRecycleView.layoutManager = LinearLayoutManager(context)
+*/
+        return binding.root
+    }
 
-        return inflater.inflate(R.layout.fragment_stat_naryads, container, false)
+    override fun onStart() {
+        super.onStart()
+        binding.textView12.text = statType + (0..100).random().toString()
     }
 
     companion object {

@@ -10,3 +10,18 @@ Asynchronous Flow
 https://kotlinlang.org/docs/flow.html
 Guide to app architecture
 https://developer.android.com/topic/architecture
+
+How to add Load More / Infinite Scrolling in Android using Kotlin
+https://johncodeos.com/how-to-add-load-more-infinite-scrolling-in-android-using-kotlin/
+
+How to create a Carousel in Android using Kotlin
+https://johncodeos.com/how-to-create-a-carousel-in-android-using-kotlin/
+
+Бесконечная автопрокрутка списков с помощью RecyclerView и LazyLists в Compose
+https://habr.com/ru/company/otus/blog/561522/
+
+Рецепты под Android: Как вкусно приготовить LayoutManager
+https://habr.com/ru/company/true_engineering/blog/267497/
+
+Повторяющаяся прокрутка viewpage2
+https://medium.com/mobile-app-development-publication/android-bi-direction-infinite-viewpager-2-scrolling-1a729e4ee773

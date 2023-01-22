@@ -4,10 +4,14 @@ import java.util.Date
 
 data class StatSummary(
     val dateWithStr:String,
-    val balancePrevSalary: Float,
-    val costUpak: Float,
-    val costShpt: Float,
-    val paymentPlus: Float,
-    val paymentMinus: Float,
-    val summary: Float
+    val initialCost: Float,
+    val upakCount: Int,
+    val upakCost: Float,
+    val shptCount: Int,
+    val shptCost: Float,
+    val paymentsPlus: Float,
+    val paymentsMinus: Float,
+    val summary: Float,
+    val upakCompliteDateListStr: List<String>,
+    val shptCompliteDateListStr: List<String>
 )

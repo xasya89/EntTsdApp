@@ -20,7 +20,6 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
     val shptNaryadList = MutableLiveData<List<StatNaryad>>(listOf())
 
     fun getSummary(idWorker: Int){
-        Log.e("Get summary",idWorker.toString())
         statApi.getSummary(idWorker).enqueue(object : Callback<StatSummary>{
             override fun onResponse(
                 call: retrofit2.Call<StatSummary>,
