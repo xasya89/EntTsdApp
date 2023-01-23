@@ -36,8 +36,8 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
         })
     }
 
-    fun getUpakList(idWorker: Int){
-        statApi.getUpakNaryads(idWorker).enqueue(object: Callback<List<StatNaryad>>{
+    fun getUpakList(idWorker: Int, find: String?, selectDate: String?, start: Int = 0, stop: Int = 50){
+        statApi.getUpakNaryads(idWorker, find, selectDate, start, stop).enqueue(object: Callback<List<StatNaryad>>{
             override fun onResponse(
                 call: retrofit2.Call<List<StatNaryad>>,
                 response: Response<List<StatNaryad>>
@@ -50,8 +50,8 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
         })
     }
 
-    fun getShptList(idWorker: Int){
-        statApi.getUpakNaryads(idWorker).enqueue(object: Callback<List<StatNaryad>>{
+    fun getShptList(idWorker: Int, find: String?, selectDate: String?, start: Int = 0, stop: Int = 50){
+        statApi.getShptNaryads(idWorker, find, selectDate, start, stop).enqueue(object: Callback<List<StatNaryad>>{
             override fun onResponse(
                 call: retrofit2.Call<List<StatNaryad>>,
                 response: Response<List<StatNaryad>>

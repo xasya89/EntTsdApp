@@ -11,16 +11,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface StatApi {
     @GET("api/stat/summary/{workerId}")
     fun getSummary(@Path("workerId") workerId: Int):Call<StatSummary>
 
     @GET("api/stat/upak/{workerId}")
-    fun getUpakNaryads(@Path("workerId") workerId: Int): Call<List<StatNaryad>>
+    fun getUpakNaryads(@Path("workerId") workerId: Int, @Query("find") find: String?, @Query("selectedDateStr") selectedDateStr:String?, @Query("startPos") startPos: Int=0, @Query("stopPos") stopPos: Int = 50): Call<List<StatNaryad>>
 
     @GET("api/stat/shpt/{workerId}")
-    fun getShptNaryads(@Path("workerId") workerId: Int): Call<List<StatNaryad>>
+    fun getShptNaryads(@Path("workerId") workerId: Int, @Query("find") find: String?, @Query("selectedDateStr") selectedDateStr: String?, @Query("startPos") startPos: Int=0, @Query("stopPos") stopPos: Int = 50): Call<List<StatNaryad>>
 
     @DELETE("api/stat/upak/{naryadId}")
     fun deleteUpakNaryad(@Path("naryadId") naryadId:Int): Call<ResponseBody>

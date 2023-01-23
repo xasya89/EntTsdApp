@@ -15,6 +15,7 @@ class StatRecycleAdapter(): RecyclerView.Adapter<StatRecycleAdapter.StatViewHold
     private var naryadList = listOf<StatNaryad>()
     fun setNaryads(naryads: List<StatNaryad>){
         naryadList = naryads
+        notifyDataSetChanged()
     }
 
     inner class StatViewHolder(item:View): RecyclerView.ViewHolder(item){
