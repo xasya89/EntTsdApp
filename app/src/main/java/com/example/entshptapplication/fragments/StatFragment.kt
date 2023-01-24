@@ -57,9 +57,9 @@ class StatFragment : Fragment() {
         binding.statViewPager.adapter=adapter
         TabLayoutMediator(binding.statTabs, binding.statViewPager){ tab, position ->
             if(position==1)
-                tab.text = "Упаковка"
-            else
                 tab.text = "Погрузка"
+            else
+                tab.text = "Упаковка"
         }.attach()
         binding.statTabs.addOnTabSelectedListener (object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected (tab: TabLayout.Tab) {
@@ -76,6 +76,7 @@ class StatFragment : Fragment() {
         binding.statFilterEdit.setOnKeyListener(object : View.OnKeyListener{
             override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
                 adapter.onUpakFilter?.invoke(binding.statFilterEdit.text.toString())
+                adapter.onShptFilter?.invoke(binding.statFilterEdit.text.toString())
                 return true
             }
         })
@@ -107,6 +108,7 @@ class StatFragment : Fragment() {
         })
     }
 
+    //Кнопка выхода
     fun addExitListener(){
         binding.statCloseBtn.setOnClickListener(object : OnClickListener{
             override fun onClick(p0: View?) {
@@ -118,6 +120,7 @@ class StatFragment : Fragment() {
         })
     }
 
+    //Выбор даты
     fun addChooseDateListener(){
         binding.statChooseDateBtn.setOnClickListener { chooseDate() }
         binding.statChooseDate.setOnClickListener { chooseDate() }

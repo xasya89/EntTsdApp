@@ -46,7 +46,9 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
                     upakNaryadList.value = response.body()
             }
 
-            override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {}
+            override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {
+                Log.e("Call error get upak stat", t.message.toString())
+            }
         })
     }
 
@@ -57,10 +59,12 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
                 response: Response<List<StatNaryad>>
             ) {
                 if(response.isSuccessful)
-                    upakNaryadList.value = response.body()
+                    shptNaryadList.value = response.body()
             }
 
-            override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {}
+            override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {
+                Log.e("Call error get shpt stat", t.message.toString())
+            }
         })
     }
 }
