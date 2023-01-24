@@ -2,6 +2,7 @@ package com.example.entshptapplication.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -72,6 +73,12 @@ class StatFragment : Fragment() {
 
         addExitListener()
         addChooseDateListener()
+        binding.statFilterEdit.setOnKeyListener(object : View.OnKeyListener{
+            override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
+                adapter.onUpakFilter?.invoke(binding.statFilterEdit.text.toString())
+                return true
+            }
+        })
         return binding.root
     }
 

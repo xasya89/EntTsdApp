@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.entshptapplication.R
+import com.example.entshptapplication.adapters.OnLoadMoreListener
+import com.example.entshptapplication.adapters.RecyclerViewLoadMoreScroll
 import com.example.entshptapplication.adapters.StatRecycleAdapter
 import com.example.entshptapplication.communications.LoginApi
 import com.example.entshptapplication.communications.StatApi
@@ -26,6 +29,8 @@ private const val ARG_SELECTED_DATE = "SELECTED_DATE"
 
 class StatNaryadsFragment : Fragment() {
 
+    var onNaryadFilter: ((String) -> Unit)? = null
+    private var isLoading = false
     private var statType: String = ""
     private var selectedDate: String? = null
     private lateinit var binding: FragmentStatNaryadsBinding
@@ -34,6 +39,8 @@ class StatNaryadsFragment : Fragment() {
         StatViewModelFactory(StatApi.getInstance(HOSTED_NAME),{})
     }
     private var adapter = StatRecycleAdapter()
+    lateinit var scrollListener: RecyclerViewLoadMoreScroll
+    lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,34 +56,74 @@ class StatNaryadsFragment : Fragment() {
     ): View? {
         binding = FragmentStatNaryadsBinding.inflate(inflater)
         binding.statRecycleView.adapter = adapter
-        binding.statRecycleView.layoutManager = LinearLayoutManager(context)
+        mLayoutManager = LinearLayoutManager(context)
+        binding.statRecycleView.layoutManager = mLayoutManager
+        binding.statRecycleView.setHasFixedSize(true)
+        setRVScrollListener()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginRepository(LoginApi.getInstance(HOSTED_NAME))
-        )
+        loginViewModel = ViewModelProvider(
+            activity?.viewModelStore!!, LoginViewModelFactory(
+                LoginRepository(LoginApi.getInstance(HOSTED_NAME))
+            )
         ).get(LoginViewModel::class.java)
 
-        if(statType=="upak") {
+        if (statType == "upak")
             statViewModel.upakNaryadList.observe(viewLifecycleOwner, {
-                adapter.setNaryads(it)
+                if (isLoading == true)
+                    adapter.appendNaryads(it)
+                else
+                    adapter.setNaryads(it)
+                isLoading = false
             })
-            statViewModel.getUpakList(loginViewModel.login.value!!.id, null, selectedDate, 0, 50)
-        }
-        if(statType=="shpt"){
-            statViewModel.shptNaryadList.observe(viewLifecycleOwner,{
-                adapter.setNaryads(it)
+        if (statType == "shpt")
+            statViewModel.shptNaryadList.observe(viewLifecycleOwner, {
+                if (isLoading == true)
+                    adapter.appendNaryads(it)
+                else
+                    adapter.setNaryads(it)
+                isLoading = false
             })
-            statViewModel.getShptList(loginViewModel.login.value!!.id, null, selectedDate, 0, 50)
+        sendRequest()
+
+        onNaryadFilter = {
+            startPosition = 0
+            endPosition = 50
+            filterString = if (it == "") null else it
+            sendRequest()
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        binding.textView12.text = statType + (0..100).random().toString()
+    private  fun setRVScrollListener() {
+        mLayoutManager = LinearLayoutManager(context)
+        scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
+        scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
+            override fun onLoadMore() {
+                loadMoreNaryads()
+            }
+        })
+        binding.statRecycleView.addOnScrollListener(scrollListener)
+    }
+
+    private var startPosition = 0
+    private var endPosition = 50
+    private var filterString: String? = null
+    private fun loadMoreNaryads(){
+        startPosition += 50
+        endPosition += 50
+        adapter.addLoading()
+        isLoading = true
+        sendRequest()
+    }
+
+    private fun sendRequest(){
+        if(statType=="upak")
+            statViewModel.getUpakList(loginViewModel.login.value!!.id, filterString, selectedDate, startPosition, endPosition)
+        if(statType=="shpt")
+            statViewModel.getShptList(loginViewModel.login.value!!.id, filterString, selectedDate, startPosition, endPosition)
     }
 
     companion object {

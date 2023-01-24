@@ -227,12 +227,12 @@
         app:tabPaddingStart="2dp" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/statFilterEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Поиск наряда"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:inputType="textPersonName" />
 
     <androidx.viewpager2.widget.ViewPager2

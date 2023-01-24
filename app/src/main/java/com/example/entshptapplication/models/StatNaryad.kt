@@ -7,8 +7,8 @@ data class StatNaryad(
     val doorId: Int,
     val shet:String,
     val shetDateStr:String,
+    val naryadNum:String,
     val numInOrder: Int,
-    val num: String,
     val note: String,
     val shtild: String?,
 
