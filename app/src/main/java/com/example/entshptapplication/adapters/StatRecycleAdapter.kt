@@ -12,7 +12,7 @@ import com.example.entshptapplication.models.StatNaryad
 
 class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onDelete:((Naryad)->Unit)? = null
+    var onDelete:((StatNaryad)->Unit)? = null
     private var naryadList = arrayListOf<StatNaryad?>()
 
     fun setNaryads(naryads: List<StatNaryad>){
@@ -42,6 +42,11 @@ class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             statNaryadItemNumInOrderTextView.text = naryad.numInOrder.toString()
             statNaryadItemDateComplite.text  =naryad.dateCompliteStr
             statNaryadItemCost.text = naryad.cost.toString()
+        }
+        init {
+            binding.shptOneActionsBtn.setOnClickListener {
+                onDelete?.invoke(naryadList[adapterPosition]!!)
+            }
         }
     }
 

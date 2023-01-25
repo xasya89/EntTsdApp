@@ -24,7 +24,10 @@ interface StatApi {
     fun getShptNaryads(@Path("workerId") workerId: Int, @Query("find") find: String?, @Query("selectedDateStr") selectedDateStr: String?, @Query("startPos") startPos: Int=0, @Query("stopPos") stopPos: Int = 50): Call<List<StatNaryad>>
 
     @DELETE("api/stat/upak/{naryadId}")
-    fun deleteUpakNaryad(@Path("naryadId") naryadId:Int): Call<ResponseBody>
+    fun deleteUpakNaryad(@Path("naryadId") naryadId:Int, @Query("workerId") workerId: Int): Call<ResponseBody>
+
+    @DELETE("api/stat/shpt/{naryadId}")
+    fun deleteShptNaryad(@Path("naryadId") naryadId:Int, @Query("workerId") workerId: Int): Call<ResponseBody>
 
     companion object {
         var satApi: StatApi? = null

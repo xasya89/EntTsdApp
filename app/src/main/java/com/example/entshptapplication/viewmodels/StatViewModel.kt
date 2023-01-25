@@ -11,6 +11,7 @@ import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.models.StatNaryad
 import com.example.entshptapplication.models.StatSummary
 import com.example.entshptapplication.repository.UpakDbRepository
+import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -36,7 +37,16 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
         })
     }
 
+    var lastFilterFind: String? = null
+    var lastFilterSelectDate: String? = null
+    var lastFilterStart: Int = 0
+    var lastFilterStop: Int = 50
+
     fun getUpakList(idWorker: Int, find: String?, selectDate: String?, start: Int = 0, stop: Int = 50){
+        lastFilterFind = find
+        lastFilterSelectDate = selectDate
+        lastFilterStart = start
+        lastFilterStop = stop
         statApi.getUpakNaryads(idWorker, find, selectDate, start, stop).enqueue(object: Callback<List<StatNaryad>>{
             override fun onResponse(
                 call: retrofit2.Call<List<StatNaryad>>,
@@ -53,6 +63,10 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
     }
 
     fun getShptList(idWorker: Int, find: String?, selectDate: String?, start: Int = 0, stop: Int = 50){
+        lastFilterFind = find
+        lastFilterSelectDate = selectDate
+        lastFilterStart = start
+        lastFilterStop = stop
         statApi.getShptNaryads(idWorker, find, selectDate, start, stop).enqueue(object: Callback<List<StatNaryad>>{
             override fun onResponse(
                 call: retrofit2.Call<List<StatNaryad>>,
@@ -64,6 +78,38 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
 
             override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {
                 Log.e("Call error get shpt stat", t.message.toString())
+            }
+        })
+    }
+
+    fun deleteUpak(workerId: Int,naryadId: Int){
+        statApi.deleteUpakNaryad(naryadId, workerId).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(
+                call: retrofit2.Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.isSuccessful)
+                    getUpakList(workerId, lastFilterFind, lastFilterSelectDate, lastFilterStart, lastFilterStop)
+            }
+
+            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
+                Log.e("Error delete upak in stat", t.message.toString())
+            }
+        })
+    }
+
+    fun deleteShpt(workerId: Int, naryadId: Int){
+        statApi.deleteShptNaryad(naryadId, workerId).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(
+                call: retrofit2.Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.isSuccessful)
+                    getShptList(workerId, lastFilterFind, lastFilterSelectDate, lastFilterStart, lastFilterStop)
+            }
+
+            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
+                Log.e("Error delete shpt in stat", t.message.toString())
             }
         })
     }

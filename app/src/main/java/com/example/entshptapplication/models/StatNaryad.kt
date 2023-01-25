@@ -3,7 +3,7 @@ package com.example.entshptapplication.models
 import java.util.*
 
 data class StatNaryad(
-    val id: Int,
+    val naryadId: Int,
     val doorId: Int,
     val shet:String,
     val shetDateStr:String,

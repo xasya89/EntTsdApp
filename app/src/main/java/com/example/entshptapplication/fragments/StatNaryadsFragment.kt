@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,9 @@ import com.example.entshptapplication.adapters.StatRecycleAdapter
 import com.example.entshptapplication.communications.LoginApi
 import com.example.entshptapplication.communications.StatApi
 import com.example.entshptapplication.databinding.FragmentStatNaryadsBinding
+import com.example.entshptapplication.dialogs.ConfirmDialog
 import com.example.entshptapplication.models.HOSTED_NAME
+import com.example.entshptapplication.models.StatNaryad
 import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.LoginViewModel
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
@@ -71,6 +74,10 @@ class StatNaryadsFragment : Fragment() {
             )
         ).get(LoginViewModel::class.java)
 
+        adapter.onDelete = {
+            onAlertDeleteDialog(view, it.naryadId)
+        }
+
         if (statType == "upak")
             statViewModel.upakNaryadList.observe(viewLifecycleOwner, {
                 if (isLoading == true)
@@ -95,6 +102,37 @@ class StatNaryadsFragment : Fragment() {
             filterString = if (it == "") null else it
             sendRequest()
         }
+    }
+
+    private fun delete(statNaryad: StatNaryad){
+        /*
+        ConfirmDialog("","Удалить наряд", R.drawable.ic_baseline_delete_green_30, {
+            if (statType == "upak")
+                statViewModel.deleteUpak(loginViewModel.login.value.id, it.naryadId)
+            if (statType == "shpt")
+                statViewModel.deleteShpt(loginViewModel.login.value.id, it.naryadId)
+        }).show(parentFragmentManager, "ConfirmDeleteDialog")
+         */
+    }
+
+    private fun onAlertDeleteDialog(view: View, naryadId: Int){
+        val builder = AlertDialog.Builder(view.context)
+        builder.setTitle("Удалить наряд?")
+        builder.setMessage("")
+        builder.setIcon(R.drawable.ic_baseline_delete_green_30)
+        builder.setPositiveButton("да") { dialog, id ->
+            if (statType == "upak")
+                statViewModel.deleteUpak(loginViewModel.login.value?.id ?: 0, naryadId)
+            if (statType == "shpt")
+                statViewModel.deleteShpt(loginViewModel.login.value?.id ?: 0, naryadId)
+            dialog.cancel()
+        }
+        builder.setNegativeButton(
+            "Отмена") { dialog, id ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 
     private  fun setRVScrollListener() {
