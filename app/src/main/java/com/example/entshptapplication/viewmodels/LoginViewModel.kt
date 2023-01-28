@@ -21,7 +21,8 @@ class LoginViewModel constructor(private val loginRepository: LoginRepository?) 
         val response = loginRepository?.Authorize(model)!!
         response.enqueue(object : Callback<Worker> {
             override fun onResponse(call: Call<Worker>, response: Response<Worker>) {
-                login.postValue(response.body())
+                if(response.isSuccessful)
+                    login.postValue(response.body())
             }
 
             override fun onFailure(call: Call<Worker>, t: Throwable) {
