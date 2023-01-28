@@ -14,6 +14,8 @@ data class UpakNaryadDb (
     val naryadId: Int,
     val doorId: Int,
     val numInOrder: Int,
+    val shet: String,
+    val shetDateStr: String?,
     val num: String,
     val note: String,
     val shtild: String?,

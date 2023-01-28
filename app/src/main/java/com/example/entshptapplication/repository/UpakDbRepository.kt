@@ -12,10 +12,20 @@ class UpakDbRepository(private val upakDao: UpakDao) {
         return upakDao.getAll()
     }
 
+    fun get(filter: String):Flow<List<UpakNaryadDb>>{
+        return upakDao.get("%"+filter+"%")
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun Insert(naryadDb: UpakNaryadDb){
         upakDao.insert(naryadDb)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun Delete(naryadId:Int){
+        upakDao.delete(naryadId)
     }
 
     @Suppress("RedundantSuspendModifier")

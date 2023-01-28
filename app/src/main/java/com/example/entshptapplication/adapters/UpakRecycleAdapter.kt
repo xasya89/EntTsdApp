@@ -21,7 +21,8 @@ class UpakRecycleAdapter: RecyclerView.Adapter<UpakRecycleAdapter.UpakViewHolder
     inner class UpakViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val binding = NaryadItemBinding.bind(item)
          fun bind(naryad: Naryad) = with(binding){
-             naryadItemShet.text = ""
+             naryadItemShet.text = naryad.shet
+             naryadItemShetDate.text = naryad.shetDateStr
              naryadItemNum.text = naryad.num
              naryadItemNumInOrder.text = naryad.numInOrder.toString()
              naryadItemCost.text = naryad.upakCost.toString()

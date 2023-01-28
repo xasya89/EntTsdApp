@@ -1,5 +1,6 @@
 package com.example.entshptapplication.fragments
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.*
 import android.media.MediaPlayer
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.example.entshptapplication.TSDApplication
@@ -47,11 +49,7 @@ class UpakListFragment : Fragment() {
         binding.upakListRecycle.layoutManager = LinearLayoutManager(context)
 
         binding.upakListBtnSave.setOnClickListener {
-            upakViewModel.save(loginViewModel.login.value?.id!!)
-            parentFragmentManager.commit {
-                replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
-                setReorderingAllowed(true)
-            }
+            actionComplite()
         }
         binding.findManualBtn.setOnClickListener {
             parentFragmentManager.commit {
@@ -60,12 +58,14 @@ class UpakListFragment : Fragment() {
             }
         }
         binding.upakListBtnCancel.setOnClickListener {
-            upakViewModel.clearUpakList()
-            parentFragmentManager.commit {
-                replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
-                setReorderingAllowed(true)
-            }
+            actionClearList()
         }
+
+        binding.upakFragmentFindTextView.addTextChangedListener {
+            upakViewModel.updateFilterStr(it?.toString() ?: "")
+        }
+
+        addCloseAction()
 
         return binding.root
     }
@@ -88,9 +88,11 @@ class UpakListFragment : Fragment() {
         upakViewModel.loadFromDb()
         //upakViewModel = UpakViewModel(upakApi)
         upakViewModel.upakList.observe(viewLifecycleOwner, {
-            adapter.setNaryads(it)
             binding.summaryCount.text = it.size.toString()
-            binding.summaryCost.text = it.sumOf{ it.upakCost.toDouble() }.toString()
+            //binding.summaryCost.text = it.sumOf{ it.upakCost.toDouble() }.toString()
+        })
+        upakViewModel.upakFilterList.observe(viewLifecycleOwner, {
+            adapter.setNaryads(it)
         })
 
         keyListenerViewModel = ViewModelProvider(activity?.viewModelStore!!, KeyListenerViewModelFactory()).get(KeyListenerViewModel::class.java)
@@ -108,7 +110,7 @@ class UpakListFragment : Fragment() {
         dialog?.setCancelable(false)
         dialog?.setContentView(R.layout.naryad_actions_dialog)
         val width = (resources.displayMetrics.widthPixels*0.97).toInt()
-        val height = 350
+        val height = 450
         dialog?.window?.setLayout(width, height)
         val body = dialog?.findViewById(R.id.naryadDialogBody) as TextView
         body.text = naryad.num
@@ -116,13 +118,55 @@ class UpakListFragment : Fragment() {
         val btnInfo = dialog.findViewById<Button>(R.id.naryadDialogInfo)
         val btnClose = dialog.findViewById<Button>(R.id.naryadDialogClose)
         btnRemove.setOnClickListener {
-            upakViewModel.upakList.value = upakViewModel.upakList.value?.minus(naryad) ?: listOf()
+            upakViewModel.deleteNaryad(naryad)
             dialog.dismiss()
         }
         btnClose.setOnClickListener {
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    private fun actionComplite(){
+        val buillder = AlertDialog.Builder(context)
+            .setTitle("Выполнить")
+            .setMessage("Отметить выполненным наряды в списке?")
+            .setNegativeButton("нет",{dialog, i -> dialog.cancel()})
+            .setPositiveButton("да",{dialog, i ->
+                upakViewModel.save(loginViewModel.login.value?.id!!, {
+                    upakViewModel.clearUpakList({
+                        parentFragmentManager.commit {
+                            replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                            setReorderingAllowed(true)
+                        }
+                    })
+                })
+            })
+        buillder.show()
+    }
+
+    private fun actionClearList(){
+        val buillder = AlertDialog.Builder(context)
+            .setTitle("Очистить")
+            .setMessage("Удалить отмеченные наряды?")
+            .setNegativeButton("нет",{dialog, i -> dialog.cancel()})
+            .setPositiveButton("да",{dialog, i ->
+                upakViewModel.clearUpakList()
+                parentFragmentManager.commit {
+                    replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                    setReorderingAllowed(true)
+                }
+            })
+        buillder.show()
+    }
+
+    private fun addCloseAction(){
+        binding.upakFragmentCloseBtn.setOnClickListener{
+            parentFragmentManager.commit {
+                replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                setReorderingAllowed(true)
+            }
+        }
     }
 
     companion object {

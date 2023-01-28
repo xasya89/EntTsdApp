@@ -4,6 +4,8 @@ import java.util.Date
 
 data class Naryad(
     val id: Int,
+    val shet: String,
+    val shetDateStr: String?,
     val doorId: Int,
     val numInOrder: Int,
     val num: String,

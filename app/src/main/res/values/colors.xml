@@ -11,4 +11,5 @@
     <color name="toolbar_blue">#2196f3</color>
     <color name="btn_blue">#5fb2f3</color>
     <color name="btn_gray">#d6d7d7</color>
+    <color name="btn_success">#90ee90</color>
 </resources>

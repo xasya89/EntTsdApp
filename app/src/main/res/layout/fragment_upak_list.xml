@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,95 +8,65 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:backgroundTint="@color/toolbar_blue">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:padding="10dp"
+                android:text="Упаковано"
+                android:textSize="@dimen/font_size_medium" />
 
-                <Button
-                    android:id="@+id/findManualBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="ручной поиск" />
-            </LinearLayout>
-
-            <TableLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/summaryCount"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp">
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text="TextView"
+                android:textAlignment="center"
+                android:textSize="@dimen/font_size_medium"
+                android:textStyle="bold" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+            <ImageButton
+                android:id="@+id/upakFragmentCloseBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/btn_blue"
+                android:src="@drawable/ic_baseline_close_30_red" />
 
-                    <TextView
-                        android:id="@+id/naryadItemShet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="120dp"
-                        android:background="@drawable/border_shape"
-                        android:text="Счет"
-                        android:textSize="@dimen/font_size_medium" />
-
-                    <TextView
-                        android:id="@+id/naryadItemNum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="120dp"
-                        android:background="@drawable/border_shape"
-                        android:text="Наряд"
-                        android:textSize="@dimen/font_size_medium" />
-
-                    <TextView
-                        android:id="@+id/naryadItemNumInOrder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="60dp"
-                        android:background="@drawable/border_shape"
-                        android:text="№"
-                        android:textSize="@dimen/font_size_medium" />
-
-                    <TextView
-                        android:id="@+id/naryadItemCost"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="100dp"
-                        android:background="@drawable/border_shape"
-                        android:text="Стоим."
-                        android:textSize="@dimen/font_size_medium" />
-                </TableRow>
-
-            </TableLayout>
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView4"
+    <Button
+        android:id="@+id/findManualBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/btn_gray"
+        android:text="ручной поиск"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:id="@+id/upakFragmentFindTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Поиск"
+        android:inputType="textPersonName" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/upakListRecycle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView3"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/upakListRecycle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </androidx.cardview.widget.CardView>
+        android:layout_weight="1" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
@@ -107,46 +77,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <Button
                 android:id="@+id/upakListBtnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Сохранить" />
+                android:backgroundTint="@color/btn_success"
+                android:text="Выполнить"
+                android:textColor="@color/black" />
 
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/summaryCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/font_size_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/summaryCost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/font_size_medium"
-                    android:textStyle="bold" />
-            </LinearLayout>
 
             <Space
                 android:layout_width="wrap_content"
@@ -158,8 +104,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Отмена" />
+                android:backgroundTint="@color/btn_gray"
+                android:text="Очистить"
+                android:textColor="@color/black"
+                app:rippleColor="@color/black" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

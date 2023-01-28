@@ -49,7 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Добавить" />
+            android:backgroundTint="@color/btn_success"
+            android:text="Добавить"
+            android:textColor="@color/black" />
 
         <Space
             android:layout_width="wrap_content"
@@ -61,6 +63,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Отмена" />
+            android:backgroundTint="@color/btn_gray"
+            android:text="Отмена"
+            android:textColor="@color/black" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
