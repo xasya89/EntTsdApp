@@ -61,7 +61,7 @@ class ShptOneFragment : Fragment() {
         binding.shptOneRecycleView.layoutManager = LinearLayoutManager(context)
         adapter.onActionClick = {actDoor -> openActionsDialog(actDoor)}
         binding.shptOneCloseBtn.setOnClickListener { close() }
-        binding.shptOneSearchTextView.inputType = InputType.TYPE_NULL
+        //binding.shptOneSearchTextView.inputType = InputType.TYPE_NULL
         binding.shptOneSearchTextView.addTextChangedListener  {
             search(it?.toString() ?: "")
         }

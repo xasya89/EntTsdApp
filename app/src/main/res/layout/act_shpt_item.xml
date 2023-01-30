@@ -163,7 +163,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:text="подробнее" />
+                        android:backgroundTint="@color/btn_gray"
+                        android:text="подробнее"
+                        android:textColor="@color/black" />
                 </TableRow>
 
                 <TableRow
@@ -177,7 +179,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
+                        android:backgroundTint="@color/btn_blue"
                         android:text="открыть"
+                        android:textColor="@color/black"
                         android:visibility="visible" />
                 </TableRow>
 
