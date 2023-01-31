@@ -20,11 +20,17 @@ interface ShptApi {
     @GET("api/actshpt/{idAct}")
     fun GetOne(@Path("idAct") idAct:Int, @Query("find") find:String): Call<ActShpt>
 
-    @POST("api/actshpt/scanlist")
-    fun ScanList(@Body model: ShptCompliteListRequestPayload): Call<List<ActShptDoor>>
+    @GET("api/actshpt/one")
+    fun getNaryadOne(@Query("workerId") workerId: Int, @Query("naryadId") naryadId: Int): Call<ActShptDoor>
 
-    @POST("api/actshpt/scan")
-    fun Scan(@Body model: ShptCompliteRequestPayload): Call<ActShptDoor>
+    @GET("api/actshpt/list")
+    fun getNaryadList(@Query("workerId") workerId: Int, @Query("naryadIdListStr") naryadIdListStr:String): Call<List<ActShptDoor>>
+
+    @GET("api/actshpt/scan")
+    fun Scan(@Query("workerId") workerId: Int, @Query("barcode") barcode:String): Call<ActShptDoor>
+
+    @POST("api/actshpt")
+    fun Complite(@Body model: ShptCompliteListRequestPayload): Call<List<ActShptDoor>>
 
     @HTTP(method = "DELETE", path = "api/actshpt", hasBody = true)
     fun Delete(@Body model: ShptCompliteDeleteRequestPayload): Call<ResponseBody>

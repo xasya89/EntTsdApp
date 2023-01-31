@@ -1,5 +1,7 @@
 package com.example.entshptapplication.adapters
 
+import android.graphics.Color
+import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,10 @@ class ShptOneRecycleAdapter: RecyclerView.Adapter<ShptOneRecycleAdapter.ShptOneV
             shptOneShetDateTextView.text = door.shetDateStr
             shptOneNaryadTextView.text = door.num
             shptOneNumInOrderTextView.text = door.numInOrder.toString()
+            if(door.isInDb)
+                binding.shptOneStatusUpload.visibility = View.VISIBLE
+            else
+                binding.shptOneStatusUpload.visibility = View.GONE
         }
         init {
             binding.shptOneActionsBtn.setOnClickListener {

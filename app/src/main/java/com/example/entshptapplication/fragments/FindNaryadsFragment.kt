@@ -100,7 +100,8 @@ class FindNaryadsFragment : Fragment() {
         )).get(UpakViewModel::class.java)
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
-        shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(shptApi,
+        shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
+            shptApi, (requireActivity().application  as TSDApplication).shptDbRepository,
             {message->
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
@@ -141,7 +142,7 @@ class FindNaryadsFragment : Fragment() {
                 var idNaryads = mutableListOf<Int>()
                 for (naryad in naryads)
                     idNaryads.add(naryad.id)
-                shptOneViewModel.scanList(actId = actShptId!!, idNaryads, loginViewModel.login.value?.id ?: 0, {
+                shptOneViewModel.chooseList(actId = actShptId!!, idNaryads, loginViewModel.login.value?.id ?: 0, {
                     parentFragmentManager.commit {
                         replace(R.id.fragmentContainerView, ShptOneFragment.newInstance(actShptId!!))
                         setReorderingAllowed(true)

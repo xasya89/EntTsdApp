@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.entshptapplication.MainActivity
 import com.example.entshptapplication.R
+import com.example.entshptapplication.TSDApplication
 import com.example.entshptapplication.adapters.ShptOneRecycleAdapter
 import com.example.entshptapplication.communications.FindNaryadsApi
 import com.example.entshptapplication.communications.LoginApi
@@ -71,6 +72,22 @@ class ShptOneFragment : Fragment() {
                 setReorderingAllowed(true)
             }
         }
+        binding.shptOneCompliteBtn.setOnClickListener {
+            shptOneViewModel.complite(idAct!!, loginViewModel.login.value!!.id, {
+                parentFragmentManager.commit {
+                    replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                    setReorderingAllowed(true)
+                }
+            })
+        }
+        binding.shptOneCancelCompliteBtn.setOnClickListener {
+            shptOneViewModel.cancelComplite(idAct!!,{
+                parentFragmentManager.commit {
+                    replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                    setReorderingAllowed(true)
+                }
+            })
+        }
 
         return binding.root
     }
@@ -85,8 +102,16 @@ class ShptOneFragment : Fragment() {
             binding.shptOneActTextView.text = it.actNum.toString() + " - " + it.actDateStr
             binding.shptOneCarNumTextView.text = it.carNum
             binding.shptOneFahrerTextView.text = it.fahrer
-            binding.shptOneDoorCountTextView.text = it.doorCount?.toString() ?: "0"
-            adapter.setDoors(it?.doors ?: listOf())
+        })
+        shptOneViewModel.naryads.observe(viewLifecycleOwner, {
+            binding.shptOneDoorCountTextView.text = it.size.toString()
+            adapter.setDoors(it)
+        })
+        shptOneViewModel.naryadsInDb.observe(viewLifecycleOwner, {
+            if(it.size==0)
+                binding.shptOneCompliteCardView.visibility = View.GONE
+            else
+                binding.shptOneCompliteCardView.visibility = View.VISIBLE
         })
         shptOneViewModel.getOActOne(idAct!!, "")
     }
@@ -99,7 +124,8 @@ class ShptOneFragment : Fragment() {
         ).get(LoginViewModel::class.java)
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
-        shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(shptApi,
+        shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
+            shptApi, (requireActivity().application  as TSDApplication).shptDbRepository,
             {message->
                 soundPlayer.playError()
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -136,7 +162,7 @@ class ShptOneFragment : Fragment() {
         val btnDelete = dialog?.findViewById<Button>(R.id.shptActionsDialogDelete)
         naryadNumTV?.text = actDoor.num
         btnDelete?.setOnClickListener {
-            shptOneViewModel.delete(actDoor.id, loginViewModel.login.value?.id!!)
+            shptOneViewModel.delete(idAct!!, actDoor, loginViewModel.login.value?.id!!)
             dialog.dismiss()
         }
         btnClose?.setOnClickListener { dialog.dismiss() }

@@ -24,5 +24,6 @@ data class ActShptDoor(
     val note: String?,
     val shtild: String?,
     val upakComplite: Boolean,
-    val shptComplite: Boolean
+    val shptComplite: Boolean,
+    var isInDb: Boolean = false
 )
