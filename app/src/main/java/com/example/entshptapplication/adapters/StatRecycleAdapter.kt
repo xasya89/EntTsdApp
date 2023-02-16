@@ -38,9 +38,7 @@ class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(naryad: StatNaryad) = with(binding){
             statNaryadItemShetTextView.text = naryad.shet
             statNaryadItemShetDateTextView.text = naryad.shetDateStr
-            statNaryadItemNaryadTextView.text = naryad.naryadNum
             statNaryadItemNumInOrderTextView.text = naryad.numInOrder.toString()
-            statNaryadItemDateComplite.text  =naryad.dateCompliteStr
             statNaryadItemCost.text = naryad.cost.toString()
         }
         init {

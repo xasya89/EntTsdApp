@@ -10,6 +10,7 @@ import com.example.entshptapplication.communications.UpakApi
 import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.models.StatNaryad
 import com.example.entshptapplication.models.StatSummary
+import com.example.entshptapplication.models.StatSummaryByDate
 import com.example.entshptapplication.repository.UpakDbRepository
 import okhttp3.ResponseBody
 import retrofit2.Callback
@@ -17,6 +18,7 @@ import retrofit2.Response
 
 class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): ViewModel() {
     val summary = MutableLiveData<StatSummary>()
+    val summaryByDate = MutableLiveData<StatSummaryByDate>()
     val upakNaryadList = MutableLiveData<List<StatNaryad>>(listOf())
     val shptNaryadList = MutableLiveData<List<StatNaryad>>(listOf())
 
@@ -32,6 +34,23 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
 
             override fun onFailure(call: retrofit2.Call<StatSummary>, t: Throwable) {
                 Log.e("Get summary response error", t.message.toString())
+            }
+
+        })
+    }
+
+    fun getSummaryByDate(idWorker: Int, selectedDateStr: String?){
+        statApi.getSummaryByDate(idWorker, selectedDateStr).enqueue(object: Callback<StatSummaryByDate>{
+            override fun onResponse(
+                call: retrofit2.Call<StatSummaryByDate>,
+                response: Response<StatSummaryByDate>
+            ) {
+                if(response.isSuccessful)
+                    summaryByDate.value = response.body()
+            }
+
+            override fun onFailure(call: retrofit2.Call<StatSummaryByDate>, t: Throwable) {
+                TODO("Not yet implemented")
             }
 
         })

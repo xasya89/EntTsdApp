@@ -232,8 +232,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Поиск наряда"
+        android:inputType="textPersonName"
         android:textSize="12sp"
-        android:inputType="textPersonName" />
+        android:visibility="gone" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/statViewPager"

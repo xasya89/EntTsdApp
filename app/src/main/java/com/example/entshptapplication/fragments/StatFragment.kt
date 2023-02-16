@@ -38,6 +38,7 @@ class StatFragment : Fragment() {
     private lateinit var loginViewModel: LoginViewModel
     private var dateList: MutableList<String> = mutableListOf()
     private var filterDateChoose: String? = null
+    private var workerId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +64,7 @@ class StatFragment : Fragment() {
         }.attach()
         binding.statTabs.addOnTabSelectedListener (object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected (tab: TabLayout.Tab) {
-                //заполнять сдесь
+                getSummaryByDate()
             }
             override fun onTabUnselected (tab: TabLayout.Tab) {
             }
@@ -85,18 +86,12 @@ class StatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginRepository(LoginApi.getInstance(HOSTED_NAME))
-        )
-        ).get(LoginViewModel::class.java)
+        getWorkerId()
 
-        statViewModel.getSummary(loginViewModel.login.value?.id ?: 0)
+        statViewModel.getSummary(workerId)
+        getSummaryByDate()
         statViewModel.summary.observe(viewLifecycleOwner,{
             binding.statChooseDate.text = if(filterDateChoose==null) { "с " + it.dateWithStr } else "на " + filterDateChoose
-            binding.statSummaryUpakCount.text = it.upakCount.toString()
-            binding.statSummaryUpakCost.text = it.upakCost.toString()
-            binding.statSummaryShptCount.text = it.shptCount.toString()
-            binding.statSummaryShptCost.text = it.shptCost.toString()
             binding.statSummeryPaymentPlus.text = it.paymentsPlus.toString()
             binding.statSummeryPaymentMinus.text = it.paymentsMinus.toString()
 
@@ -106,6 +101,24 @@ class StatFragment : Fragment() {
                 if(dateList.indexOf(dateOne)==-1)
                     dateList.add(dateOne)
         })
+        statViewModel.summaryByDate.observe(viewLifecycleOwner, {
+            binding.statSummaryUpakCount.text = it.upakCount.toString()
+            binding.statSummaryUpakCost.text = it.upakCost.toString()
+            binding.statSummaryShptCount.text = it.shptCount.toString()
+            binding.statSummaryShptCost.text = it.shptCost.toString()
+        })
+    }
+
+    fun getWorkerId(){
+        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
+            LoginRepository(LoginApi.getInstance(HOSTED_NAME))
+        )
+        ).get(LoginViewModel::class.java)
+        workerId = loginViewModel.login.value?.id ?: 0;
+    }
+
+    fun getSummaryByDate(){
+        statViewModel.getSummaryByDate(workerId, filterDateChoose)
     }
 
     //Кнопка выхода

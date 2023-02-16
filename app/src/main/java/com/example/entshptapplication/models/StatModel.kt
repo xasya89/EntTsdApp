@@ -15,3 +15,11 @@ data class StatSummary(
     val upakCompliteDateListStr: List<String>,
     val shptCompliteDateListStr: List<String>
 )
+
+data class StatSummaryByDate(
+    val currentDateStr: String,
+    val upakCount: Int,
+    val upakCost: Float,
+    val shptCount: Int,
+    val shptCost: Float
+)
