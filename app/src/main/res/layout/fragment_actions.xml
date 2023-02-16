@@ -21,14 +21,13 @@
         android:id="@+id/actListActionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-125dp"
+        android:layout_marginTop="20dp"
         android:width="@dimen/actionBtnWidth"
         android:height="@dimen/actionBtnHeight"
         android:text="Погрузка"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/workerFIOTextView" />
 
     <Button
         android:id="@+id/upakActionBtn"
@@ -65,5 +64,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/displayResolutionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statActionBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

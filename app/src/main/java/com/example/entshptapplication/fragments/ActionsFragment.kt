@@ -1,6 +1,8 @@
 package com.example.entshptapplication.fragments
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -76,6 +78,18 @@ class ActionsFragment : Fragment() {
         keyListenerViewModel.barCode.observe(viewLifecycleOwner, {
 
         })
+
+        //Отобразим разрешение экрана
+        binding.displayResolutionTextView.text = getDisplayResolution()
+    }
+
+    fun getDisplayResolution(): String{
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+
+        var width = displayMetrics.widthPixels
+        var height = displayMetrics.heightPixels
+        return width.toString() + " x " + height.toString()
     }
 
     companion object {
