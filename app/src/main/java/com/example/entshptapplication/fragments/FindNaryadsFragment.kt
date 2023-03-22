@@ -2,6 +2,8 @@ package com.example.entshptapplication.fragments
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -12,6 +14,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.entshptapplication.R
 import com.example.entshptapplication.TSDApplication
@@ -26,6 +29,7 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.*
+import kotlinx.coroutines.*
 import kotlin.math.log
 
 private const val ARG_PARAM1 = "type-screen"
@@ -113,9 +117,46 @@ class FindNaryadsFragment : Fragment() {
             adapter.setNaryads(it)
         })
 
-        binding.findTextView.addTextChangedListener {
-            findNaryadsViewModel.find(binding.findTextView.text.toString())
+        //Debounce для поиска нарядов
+        var searchFor = ""
+        binding.findTextView.addTextChangedListener{
+            val searchText = it.toString().trim()
+            if (searchText == searchFor)
+                return@addTextChangedListener
+            searchFor = searchText
+            lifecycleScope.launch {
+                delay(500)  //debounce timeOut
+                if (searchText != searchFor)
+                    return@launch
+                findNaryadsViewModel.find(binding.findTextView.text.toString())
+            }
         }
+            binding.findTextView.addTextChangedListener {
+                object : TextWatcher {
+                    private var searchFor = ""
+                    override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        val searchText = s.toString().trim()
+                        Log.d("launch", "------")
+                        if (searchText == searchFor)
+                            return
+                        searchFor = searchText
+                        Log.d("launch", "------")
+                        lifecycleScope.launch {
+                            Log.d("launch", "------")
+                            delay(300)  //debounce timeOut
+                            if (searchText != searchFor)
+                                return@launch
+
+                            findNaryadsViewModel.find(binding.findTextView.text.toString())
+                        }
+
+                    }
+
+                    override fun afterTextChanged(p0: Editable?) {}
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                }
+            }
+
 
         binding.btnSave.setOnClickListener { saveCheckedNaryads() }
 
