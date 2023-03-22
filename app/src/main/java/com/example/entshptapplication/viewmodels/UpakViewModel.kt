@@ -4,11 +4,10 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.entshptapplication.communications.UpakApi
 import com.example.entshptapplication.databaseModels.UpakNaryadDb
-import com.example.entshptapplication.models.FindNaryadModel
-import com.example.entshptapplication.models.Naryad
-import com.example.entshptapplication.models.RequestUpakModel
-import com.example.entshptapplication.models.ResponseMessageModel
+import com.example.entshptapplication.models.*
 import com.example.entshptapplication.repository.UpakDbRepository
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -104,22 +103,30 @@ class UpakViewModel (private val upakApi: UpakApi, private val upakDbRepository:
         val resp = upakApi.Scan(barcode)
         resp.enqueue(object : Callback<Naryad>{
             override fun onResponse(call: Call<Naryad>, response: Response<Naryad>) {
+                Log.d("response", response.isSuccessful.toString())
                 if (!response.isSuccessful) {
-                    onError?.invoke(response.errorBody()?.string() ?: "")
+                    try {
+                        val errorStringRaw: String? = response.errorBody()?.string()
+                        val response: ResponseMessageModel = Gson().fromJson(errorStringRaw, ResponseMessageModel::class.java)
+                        onError?.invoke( response.message ?: "")
+                    } catch (e: Exception) {
+
+                    }
                     return
                 }
                 val naryad = response.body()
+                Log.d("naryad",naryad.toString())
                 if (naryad == null)
                     return
-                if(upakList.value?.none{it.id==naryad.id} ?: false)
+                if(upakList.value?.any{it.id==naryad.id} == true)
                     return
                 addInDb(naryad)
-
                 upakList.value = upakList.value?.plus(naryad)
             }
 
             override fun onFailure(call: Call<Naryad>, t: Throwable) {
                 onError?.invoke(t.message.toString())
+                Log.d("error lof", t.message.toString())
             }
 
         })

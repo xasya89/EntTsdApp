@@ -72,7 +72,7 @@ class UpakListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        soundPlayer = SoundPlayer(context)
+        soundPlayer = SoundPlayer(requireContext())
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
             LoginRepository(LoginApi.getInstance(HOSTED_NAME))
         )
@@ -82,7 +82,7 @@ class UpakListFragment : Fragment() {
             UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository,
             {
                 soundPlayer.playError()
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
             }
         )).get(UpakViewModel::class.java)
         upakViewModel.loadFromDb()
