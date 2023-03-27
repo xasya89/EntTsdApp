@@ -49,9 +49,7 @@ class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): Vi
                     summaryByDate.value = response.body()
             }
 
-            override fun onFailure(call: retrofit2.Call<StatSummaryByDate>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
+            override fun onFailure(call: retrofit2.Call<StatSummaryByDate>, t: Throwable) {}
 
         })
     }
