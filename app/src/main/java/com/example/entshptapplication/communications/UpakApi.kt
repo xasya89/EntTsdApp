@@ -25,10 +25,7 @@ interface UpakApi {
 
         fun getInstance(hostedName: String): UpakApi {
             if(upakApi == null){
-                val retrofit = Retrofit.Builder().baseUrl(hostedName)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                upakApi = retrofit.create(UpakApi::class.java)
+                upakApi = RetrofitCreator.getRetrofit(hostedName).create(UpakApi::class.java)
             }
             return upakApi!!
         }

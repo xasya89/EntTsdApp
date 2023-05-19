@@ -23,10 +23,7 @@ interface FindNaryadsApi {
 
         fun getInstance(hostedName: String): FindNaryadsApi {
             if(findNaryadApi == null){
-                val retrofit = Retrofit.Builder().baseUrl(hostedName)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                findNaryadApi = retrofit.create(FindNaryadsApi::class.java)
+                findNaryadApi = RetrofitCreator.getRetrofit(hostedName).create(FindNaryadsApi::class.java)
             }
             return findNaryadApi!!
         }

@@ -1,17 +1,18 @@
 package com.example.entshptapplication.communications
 
 import com.example.entshptapplication.models.*
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.HTTP
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.util.concurrent.TimeUnit
+
 
 interface ShptApi {
     @GET("api/actshpt")
@@ -40,10 +41,7 @@ interface ShptApi {
 
         fun getInstance(hostedName: String): ShptApi {
             if(shptApi == null){
-                val retrofit = Retrofit.Builder().baseUrl(hostedName)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                shptApi = retrofit.create(ShptApi::class.java)
+                shptApi = RetrofitCreator.getRetrofit(hostedName).create(ShptApi::class.java)
             }
             return shptApi!!
         }

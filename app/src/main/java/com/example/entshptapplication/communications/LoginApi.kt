@@ -27,10 +27,7 @@ interface LoginApi {
 
         fun getInstance(hostedName: String): LoginApi {
             if(loginApi == null){
-                val retrofit = Retrofit.Builder().baseUrl(hostedName)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                loginApi = retrofit.create(LoginApi::class.java)
+                loginApi = RetrofitCreator.getRetrofit(hostedName).create(LoginApi::class.java)
             }
             return loginApi!!
         }

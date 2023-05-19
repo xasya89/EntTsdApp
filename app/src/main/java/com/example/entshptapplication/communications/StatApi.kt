@@ -38,10 +38,7 @@ interface StatApi {
 
         fun getInstance(hostedName: String): StatApi {
             if(satApi == null){
-                val retrofit = Retrofit.Builder().baseUrl(hostedName)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                satApi = retrofit.create(StatApi::class.java)
+                satApi = RetrofitCreator.getRetrofit(hostedName).create(StatApi::class.java)
             }
             return satApi!!
         }
