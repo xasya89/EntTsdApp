@@ -2,15 +2,15 @@ package com.example.entshptapplication.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.entshptapplication.communications.LoginApi
 import com.example.entshptapplication.communications.ShptApi
 import com.example.entshptapplication.communications.UpakApi
-import com.example.entshptapplication.repository.LoginRepository
 
-class LoginViewModelFactory constructor(private val repository: LoginRepository): ViewModelProvider.Factory {
+class LoginViewModelFactory constructor(private val loginApi: LoginApi): ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            LoginViewModel(this.repository) as T
+            LoginViewModel(this.loginApi) as T
         } else {
             throw IllegalArgumentException("ViewModel Not Found")
         }

@@ -18,7 +18,6 @@ import com.example.entshptapplication.communications.LoginApi
 import com.example.entshptapplication.communications.StatApi
 import com.example.entshptapplication.databinding.FragmentStatBinding
 import com.example.entshptapplication.models.HOSTED_NAME
-import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.LoginViewModel
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 import com.example.entshptapplication.viewmodels.StatViewModel
@@ -111,7 +110,7 @@ class StatFragment : Fragment() {
 
     fun getWorkerId(){
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginRepository(LoginApi.getInstance(HOSTED_NAME))
+            LoginApi.getInstance(HOSTED_NAME)
         )
         ).get(LoginViewModel::class.java)
         workerId = loginViewModel.login.value?.id ?: 0;

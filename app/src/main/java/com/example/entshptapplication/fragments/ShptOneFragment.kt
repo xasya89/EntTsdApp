@@ -28,7 +28,6 @@ import com.example.entshptapplication.communications.ShptApi
 import com.example.entshptapplication.databinding.FragmentShptOneBinding
 import com.example.entshptapplication.models.ActShptDoor
 import com.example.entshptapplication.models.HOSTED_NAME
-import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.*
 
 private const val ARG_PARAM_ID_ACT = "idAct"
@@ -119,7 +118,7 @@ class ShptOneFragment : Fragment() {
     fun initViewModels(){
         val loginApi = LoginApi.getInstance(HOSTED_NAME)
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginRepository(loginApi)
+            loginApi
         )
         ).get(LoginViewModel::class.java)
 

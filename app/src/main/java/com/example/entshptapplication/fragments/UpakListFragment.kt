@@ -21,7 +21,6 @@ import com.example.entshptapplication.communications.UpakApi
 import com.example.entshptapplication.databinding.FragmentUpakListBinding
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.Naryad
-import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.*
 import android.media.MediaPlayer
 import androidx.core.widget.addTextChangedListener
@@ -74,7 +73,7 @@ class UpakListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         soundPlayer = SoundPlayer(requireContext())
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginRepository(LoginApi.getInstance(HOSTED_NAME))
+            LoginApi.getInstance(HOSTED_NAME)
         )
         ).get(LoginViewModel::class.java)
 

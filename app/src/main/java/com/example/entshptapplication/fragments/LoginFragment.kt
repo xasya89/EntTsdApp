@@ -21,7 +21,6 @@ import com.example.entshptapplication.models.ConnectionSetting
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.LoginModel
 import com.example.entshptapplication.models.Worker
-import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.LoginViewModel
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 import com.example.entshptapplication.viewmodels.SettingsViewModel
@@ -50,7 +49,16 @@ class LoginFragment : Fragment() {
         }
 
         binding.loginBtn.setOnClickListener {
-            loginViewModel.Authorize(LoginModel(smartCartNum = binding.smartCartEdit.text.toString()))
+            loginViewModel.getLogin(LoginModel(smartCartNum = binding.smartCartEdit.text.toString()))
+                .observe(viewLifecycleOwner, Observer {
+                    if(it?.id == 0)
+                        return@Observer
+                    worker=it
+                    parentFragmentManager.commit {
+                        replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                        setReorderingAllowed(true)
+                    }
+                })
         }
 
         return  binding.root
@@ -71,8 +79,9 @@ class LoginFragment : Fragment() {
             try{
                 val loginApi = LoginApi.getInstance(HOSTED_NAME)
                 loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-                    LoginRepository((loginApi))
+                    loginApi
                 )).get(LoginViewModel::class.java)
+                /*
                 loginViewModel.login.observe(viewLifecycleOwner, Observer {
                     if(it.id == 0)
                         return@Observer
@@ -82,6 +91,7 @@ class LoginFragment : Fragment() {
                         setReorderingAllowed(true)
                     }
                 })
+                 */
             }
             catch (ex: Exception){
                 Log.e("login api error",ex.message.toString())

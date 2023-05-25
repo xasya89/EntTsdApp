@@ -11,7 +11,7 @@ import retrofit2.http.POST
 
 interface LoginApi {
     @POST("api/login")
-    fun Authorize(@Body loginModel: LoginModel): Call<Worker>
+    suspend fun Authorize(@Body loginModel: LoginModel): Worker
 
     companion object {
         var loginApi: LoginApi? = null

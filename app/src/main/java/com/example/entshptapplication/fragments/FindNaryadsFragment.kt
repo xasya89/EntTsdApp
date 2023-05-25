@@ -27,7 +27,6 @@ import com.example.entshptapplication.databinding.FragmentFindNaryadsBinding
 import com.example.entshptapplication.models.FindNaryadModel
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.Naryad
-import com.example.entshptapplication.repository.LoginRepository
 import com.example.entshptapplication.viewmodels.*
 import kotlinx.coroutines.*
 import kotlin.math.log
@@ -94,7 +93,7 @@ class FindNaryadsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val loginApi = LoginApi.getInstance(HOSTED_NAME)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(LoginRepository(loginApi))).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(loginApi)).get(LoginViewModel::class.java)
 
         upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
             UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository,
