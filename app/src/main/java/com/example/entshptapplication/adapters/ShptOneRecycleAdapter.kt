@@ -35,7 +35,8 @@ class ShptOneRecycleAdapter: RecyclerView.Adapter<ShptOneRecycleAdapter.ShptOneV
         }
         init {
             binding.shptOneActionsBtn.setOnClickListener {
-                onActionClick?.invoke(doorList[adapterPosition])
+                if(doorList.size>0)
+                    onActionClick?.invoke(doorList[adapterPosition])
             }
         }
     }

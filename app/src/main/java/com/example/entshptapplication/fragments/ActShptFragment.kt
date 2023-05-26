@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.entshptapplication.R
@@ -45,10 +46,10 @@ class ActShptFragment : Fragment() {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         })).get(ShptViewModel::class.java)
 
-        shptViewModel.shptList.observe(viewLifecycleOwner, {
+        shptViewModel.getActList().observe(viewLifecycleOwner, Observer {
+
             adapter.setList(it)
         })
-        shptViewModel.getActList()
     }
 
     fun back(){

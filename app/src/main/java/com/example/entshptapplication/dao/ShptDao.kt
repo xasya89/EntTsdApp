@@ -14,13 +14,16 @@ interface ShptDao {
     fun getAll(): Flow<List<ShptDoorDb>>
 
     @Query("SELECT * FROM shpt_doors WHERE actId=:actId ORDER BY id ASC")
-    fun getAll(actId: Int): Flow<List<ShptDoorDb>>
+    suspend fun getAll(actId: Int): List<ShptDoorDb>
 
     @Query("SELECT * FROM shpt_doors WHERE actId=:actId AND num LIKE :filter ORDER BY id ASC")
     fun get(actId: Int, filter: String?): Flow<List<ShptDoorDb>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(actDoorDb: ShptDoorDb)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(actDoorsDb: List<ShptDoorDb>)
 
     @Query("DELETE FROM shpt_doors WHERE actId=:actId AND naryadId=:naryadId")
     suspend fun delete(actId: Int, naryadId: Int)

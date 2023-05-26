@@ -21,21 +21,21 @@
                 android:id="@+id/shptOneFahrerTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/textView25"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shptOneActTextView" />
 
             <TextView
                 android:id="@+id/shptOneDoorCountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:text="TextView"
                 android:textSize="@dimen/font_size_medium"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/shptOneCloseBtn"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,32 +63,12 @@
                 android:id="@+id/shptOneCarNumTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/textView27"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shptOneFahrerTextView" />
 
-
-            <TextView
-                android:id="@+id/textView27"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:text="Транспорт"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView25" />
-
-            <TextView
-                android:id="@+id/textView25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:text="Водитель"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
             <ImageButton
                 android:id="@+id/shptOneCloseBtn"

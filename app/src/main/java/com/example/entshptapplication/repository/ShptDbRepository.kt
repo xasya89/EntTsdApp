@@ -11,7 +11,7 @@ class ShptDbRepository(private val  shptDao: ShptDao) {
         return shptDao.getAll()
     }
 
-    fun getList(actId: Int): Flow<List<ShptDoorDb>> {
+    suspend fun getList(actId: Int): List<ShptDoorDb> {
         return shptDao.getAll(actId)
     }
 
@@ -19,20 +19,24 @@ class ShptDbRepository(private val  shptDao: ShptDao) {
         return shptDao.get(actId, "%"+filter+"%")
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
+    //@Suppress("RedundantSuspendModifier")
+    //@WorkerThread
     suspend fun Insert(shptDoorDb: ShptDoorDb){
         shptDao.insert(shptDoorDb)
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
+    suspend fun InsertAll(shptDoorsDb: List<ShptDoorDb>){
+        shptDao.insertAll(shptDoorsDb)
+    }
+
+    //@Suppress("RedundantSuspendModifier")
+    //@WorkerThread
     suspend fun Delete(actId:Int, naryadId:Int){
         shptDao.delete(actId, naryadId)
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
+    //@Suppress("RedundantSuspendModifier")
+    //@WorkerThread
     suspend fun clear(actId: Int){
         shptDao.clear(actId)
     }

@@ -1,32 +1,37 @@
 package com.example.entshptapplication.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.communications.ShptApi
 import com.example.entshptapplication.models.ActShpt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ShptViewModel constructor(val shptApi: ShptApi, var onError: ((String)-> Unit)? = null) : ViewModel() {
-    var shptList = MutableLiveData<List<ActShpt>>(listOf())
 
-    fun getActList(){
-        val resp = shptApi.GetActList()
-        resp.enqueue(object: Callback<List<ActShpt>>{
-            override fun onResponse(call: Call<List<ActShpt>>, response: Response<List<ActShpt>>) {
-                if(!response.isSuccessful){
-                    onError?.invoke(response.errorBody()?.string() ?: "ошибка")
-                    return
+    fun getActList() = liveData<List<ActShpt>>(Dispatchers.IO) {
+
+        try{
+            emit(shptApi.GetActList())
+        }
+        catch (e:Exception){
+            viewModelScope.launch {
+                try {
+                    withContext(Dispatchers.Main){
+                        onError?.invoke(e.message.toString())
+                    }
                 }
-                shptList.value = response.body()
+                catch (e:Exception){}
             }
-
-            override fun onFailure(call: Call<List<ActShpt>>, t: Throwable) {
-                onError?.invoke(t.message.toString());
-            }
-        })
+        }
     }
 
 }

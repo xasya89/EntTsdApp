@@ -17,6 +17,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.entshptapplication.MainActivity
 import com.example.entshptapplication.R
@@ -29,6 +30,9 @@ import com.example.entshptapplication.databinding.FragmentShptOneBinding
 import com.example.entshptapplication.models.ActShptDoor
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.viewmodels.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val ARG_PARAM_ID_ACT = "idAct"
 
@@ -40,7 +44,6 @@ class ShptOneFragment : Fragment() {
     private lateinit var keyListenerViewModel: KeyListenerViewModel
     private lateinit var findNaryadsViewModel: FindNaryadsViewModel
     private var adapter = ShptOneRecycleAdapter()
-    private lateinit var soundPlayer: SoundPlayer
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +51,6 @@ class ShptOneFragment : Fragment() {
         arguments?.let {
             idAct = it.getInt(ARG_PARAM_ID_ACT)
         }
-        soundPlayer = SoundPlayer(requireContext())
     }
 
     override fun onCreateView(
@@ -94,25 +96,24 @@ class ShptOneFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModels()
+        loadAct()
 
-        shptOneViewModel.act.observe(viewLifecycleOwner, {
-            if(it==null)
-                return@observe
-            binding.shptOneActTextView.text = it.actNum.toString() + " - " + it.actDateStr
-            binding.shptOneCarNumTextView.text = it.carNum
-            binding.shptOneFahrerTextView.text = it.fahrer
-        })
         shptOneViewModel.naryads.observe(viewLifecycleOwner, {
             binding.shptOneDoorCountTextView.text = it.size.toString()
             adapter.setDoors(it)
-        })
-        shptOneViewModel.naryadsInDb.observe(viewLifecycleOwner, {
-            if(it.size==0)
+            if(it.none { naryad -> naryad.isInDb }==true)
                 binding.shptOneCompliteCardView.visibility = View.GONE
             else
                 binding.shptOneCompliteCardView.visibility = View.VISIBLE
         })
-        shptOneViewModel.getOActOne(idAct!!, "")
+    }
+
+    private fun loadAct(){
+        shptOneViewModel.getOActOne(idAct!!).observe(viewLifecycleOwner, Observer {act->
+            binding.shptOneActTextView.text = act?.actNum.toString() + " - " + act?.actDateStr
+            binding.shptOneCarNumTextView.text = act?.carNum
+            binding.shptOneFahrerTextView.text = act?.fahrer
+        })
     }
 
     fun initViewModels(){
@@ -126,7 +127,6 @@ class ShptOneFragment : Fragment() {
         shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
             shptApi, (requireActivity().application  as TSDApplication).shptDbRepository,
             {message->
-                soundPlayer.playError()
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
         )).get(ShptOneViewModel::class.java)
@@ -180,7 +180,7 @@ class ShptOneFragment : Fragment() {
     }
 
     fun search(str: String){
-        shptOneViewModel.getOActOne(idAct!!, str)
+        shptOneViewModel.getOActOne(idAct!!)
     }
 
     fun clearBarCode(){

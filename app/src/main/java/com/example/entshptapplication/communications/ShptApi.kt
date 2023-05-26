@@ -16,25 +16,25 @@ import java.util.concurrent.TimeUnit
 
 interface ShptApi {
     @GET("api/actshpt")
-    fun GetActList():Call<List<ActShpt>>
+    suspend fun GetActList():List<ActShpt>
 
     @GET("api/actshpt/{idAct}")
-    fun GetOne(@Path("idAct") idAct:Int, @Query("find") find:String): Call<ActShpt>
+    suspend fun GetOne(@Path("idAct") idAct:Int, @Query("find") find:String): ActShpt
 
     @GET("api/actshpt/one")
     fun getNaryadOne(@Query("workerId") workerId: Int, @Query("naryadId") naryadId: Int): Call<ActShptDoor>
 
     @GET("api/actshpt/list")
-    fun getNaryadList(@Query("workerId") workerId: Int, @Query("naryadIdListStr") naryadIdListStr:String): Call<List<ActShptDoor>>
+    suspend fun getNaryadList(@Query("workerId") workerId: Int, @Query("naryadIdListStr") naryadIdListStr:String): List<ActShptDoor>
 
     @GET("api/actshpt/scan")
-    fun Scan(@Query("workerId") workerId: Int, @Query("barcode") barcode:String): Call<ActShptDoor>
+    suspend fun Scan(@Query("workerId") workerId: Int, @Query("barcode") barcode:String): ActShptDoor
 
     @POST("api/actshpt")
-    fun Complite(@Body model: ShptCompliteListRequestPayload): Call<List<ActShptDoor>>
+    suspend fun Complite(@Body model: ShptCompliteListRequestPayload): List<ActShptDoor>
 
     @HTTP(method = "DELETE", path = "api/actshpt", hasBody = true)
-    fun Delete(@Body model: ShptCompliteDeleteRequestPayload): Call<ResponseBody>
+    suspend fun Delete(@Body model: ShptCompliteDeleteRequestPayload): ResponseBody
 
     companion object {
         var shptApi: ShptApi? = null
