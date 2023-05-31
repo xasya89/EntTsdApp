@@ -39,6 +39,12 @@ class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbReposit
         }
     }
 
+    fun search(actId: Int, find:String){
+        viewModelScope.launch {
+            naryads.postValue(load(actId).doors.filter { it.num.indexOf(find)>-1 })
+        }
+    }
+
     fun <T> concatenate(vararg lists: List<T>): List<T> {
         return listOf(*lists).flatten()
     }

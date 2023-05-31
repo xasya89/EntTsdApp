@@ -83,14 +83,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <EditText
+    <SearchView
         android:id="@+id/shptOneSearchTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:ems="10"
-        android:hint="Поиск"
-        android:inputType="textPersonName" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/shptOneSearchBtn"

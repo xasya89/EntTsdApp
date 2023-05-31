@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
@@ -64,9 +65,25 @@ class ShptOneFragment : Fragment() {
         adapter.onActionClick = {actDoor -> openActionsDialog(actDoor)}
         binding.shptOneCloseBtn.setOnClickListener { close() }
         //binding.shptOneSearchTextView.inputType = InputType.TYPE_NULL
+        binding.shptOneSearchTextView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if(query!=null)
+                    search(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText ?: "" == "")
+                    search("")
+                return false
+            }
+        })
+/*
         binding.shptOneSearchTextView.addTextChangedListener  {
             search(it?.toString() ?: "")
         }
+
+ */
         binding.shptOneSearchBtn.setOnClickListener {
             parentFragmentManager.commit {
                 replace(R.id.fragmentContainerView, FindNaryadsFragment.newInstance(FIND_NARYAD_PARENT_SHPT, idAct))
@@ -181,7 +198,7 @@ class ShptOneFragment : Fragment() {
     }
 
     fun search(str: String){
-        shptOneViewModel.getOActOne(idAct!!)
+        shptOneViewModel.search(idAct!!, str)
     }
 
     fun clearBarCode(){

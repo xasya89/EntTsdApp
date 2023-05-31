@@ -34,7 +34,7 @@ class ShptRecycleAdapter: RecyclerView.Adapter<ShptRecycleAdapter.ShptViewHolder
             fahrerTextView.text = actShpt.fahrer
             carNumTextView.text = actShpt.carNum
         }
-        init {d
+        init {
             binding.btnOpen.setOnClickListener {
                 onOpenAct?.invoke(actList[adapterPosition])
             }
