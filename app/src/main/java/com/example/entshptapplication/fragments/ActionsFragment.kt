@@ -77,9 +77,6 @@ class ActionsFragment : Fragment() {
         keyListenerViewModel.barCode.observe(viewLifecycleOwner, {
 
         })
-
-        //Отобразим разрешение экрана
-        binding.displayResolutionTextView.text = getDisplayResolution()
     }
 
     fun getDisplayResolution(): String{
