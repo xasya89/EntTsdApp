@@ -104,10 +104,7 @@ class FindNaryadsFragment : Fragment() {
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
         shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
-            shptApi, (requireActivity().application  as TSDApplication).shptDbRepository,
-            {message->
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            }
+            shptApi, (requireActivity().application  as TSDApplication).shptDbRepository
         )).get(ShptOneViewModel::class.java)
 
         val findNaryadsApi = FindNaryadsApi.getInstance(HOSTED_NAME)
