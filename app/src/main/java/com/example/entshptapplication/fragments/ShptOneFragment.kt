@@ -106,6 +106,10 @@ class ShptOneFragment : Fragment() {
             else
                 binding.shptOneCompliteCardView.visibility = View.VISIBLE
         })
+        shptOneViewModel.error.observe(viewLifecycleOwner, Observer {
+            if(it!=null)
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG)
+        })
     }
 
     private fun loadAct(){
@@ -125,10 +129,7 @@ class ShptOneFragment : Fragment() {
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
         shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
-            shptApi, (requireActivity().application  as TSDApplication).shptDbRepository,
-            {message->
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-            }
+            shptApi, (requireActivity().application  as TSDApplication).shptDbRepository
         )).get(ShptOneViewModel::class.java)
 
         keyListenerViewModel = ViewModelProvider(activity?.viewModelStore!!, KeyListenerViewModelFactory()).get(KeyListenerViewModel::class.java)

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.communications.ShptApi
 import com.example.entshptapplication.databaseModels.ShptDoorDb
@@ -22,8 +23,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbRepository, var onError: ((String)->Unit)? = null): ViewModel() {
+class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbRepository): ViewModel() {
     val naryads = MutableLiveData<List<ActShptDoor>>(listOf())
+    val error = MutableLiveData<String?>()
 
     fun getOActOne(idAct: Int) = liveData<ActShpt> {
         try {
@@ -32,7 +34,9 @@ class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbReposit
             naryads.value = act.doors
             emit(act)
         }
-        catch (e: Exception) {}
+        catch (e: Exception) {
+            error.postValue(e.message.toString())
+        }
     }
 
     fun <T> concatenate(vararg lists: List<T>): List<T> {
@@ -60,7 +64,7 @@ class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbReposit
                 )
             }
         result.doors = concatenate(result.doors, dbList)
-        return  result
+        return result
     }
 
     private suspend fun loadApi(id: Int, find:String) = withContext(Dispatchers.IO){
@@ -75,7 +79,7 @@ class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbReposit
         viewModelScope.launch(Dispatchers.IO + getCoroutineExceptionHandler()) {
             val newDoor = shptApi.Scan(workerId, barCode)
             newDoor.isInDb = true
-            naryads.postValue(concatenate(naryads.value!!, listOf(newDoor)))
+            //naryads.postValue(concatenate(naryads.value!!, listOf(newDoor)))
             addInDb(actId, listOf(newDoor))
         }
     }
@@ -139,14 +143,12 @@ class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbReposit
 
     private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
         return CoroutineExceptionHandler { context, throwable ->
-            viewModelScope.launch {
-                onError?.invoke(throwable.message?.toString() ?: "Ошибка")
-            }
+            error.postValue(throwable.message.toString())
         }
     }
 
     private suspend fun addInDb(actId: Int, doors: List<ActShptDoor>) = withContext(Dispatchers.IO) {
-        shptDbRepository.InsertAll(doors.filter { door -> naryads.value!!.none { it.idNaryad == door.idNaryad } }.map {door->
+        val newDoors = doors.filter { door -> naryads.value!!.none { it.idNaryad == door.idNaryad } }.map {door ->
             ShptDoorDb(
                 id = 0,
                 actId = actId,
@@ -161,12 +163,36 @@ class ShptOneViewModel(val shptApi: ShptApi, val shptDbRepository: ShptDbReposit
                 upakComplite = door.upakComplite,
                 shptComplite = door.shptComplite
             )
-        })
+        }
+        if(newDoors.size==0)
+            return@withContext
+
+        shptDbRepository.InsertAll(newDoors)
+        val naryadInDb = loadFromDb(actId)
+        naryads.postValue(concatenate(
+            naryads.value!!,
+            naryadInDb.filter { door -> !newDoors.none { it.naryadId==door.naryadId } }.map { db ->
+                ActShptDoor(
+                    db.id,
+                    db.naryadId,
+                    db.doorId,
+                    db.shet,
+                    db.shetDateStr,
+                    db.numInOrder,
+                    db.num,
+                    db.note,
+                    db.shtild,
+                    db.upakComplite,
+                    db.shptComplite,
+                    true
+                )
+            }
+        ))
     }
 }
 
-class ShptOneViewModelFactory constructor(private val shptApi: ShptApi, private val shptDbRepository: ShptDbRepository, private var onError: ((String)->Unit)? = null): ViewModelProvider.Factory{
+class ShptOneViewModelFactory constructor(private val shptApi: ShptApi, private val shptDbRepository: ShptDbRepository): ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ShptOneViewModel(shptApi, shptDbRepository, onError) as T
+        return ShptOneViewModel(shptApi, shptDbRepository) as T
     }
 }
