@@ -33,49 +33,11 @@ class ShptRecycleAdapter: RecyclerView.Adapter<ShptRecycleAdapter.ShptViewHolder
             actNumTextView.text = actShpt.actNum.toString()
             fahrerTextView.text = actShpt.fahrer
             carNumTextView.text = actShpt.carNum
-            when(showMorePositions[position]){
-                true -> onMoreShow()
-                false -> onMoreHide()
-            }
         }
-        init {
-            binding.btnMore.setOnClickListener {
-                val pos = adapterPosition
-                val act = actList[pos]
-                val showMoreFlag = showMorePositions[pos]
-                //onMoreShow()
-                /*
-                when(showMoreFlag){
-                    true -> onMoreShow()
-                    false -> onMoreHide()
-                }
-                 */
-                showMorePositions.set(pos, true)
-                for( i in 0 .. showMorePositions.size - 1){
-                    if(i!=pos)
-                        showMorePositions.set(i, false)
-                }
-                notifyDataSetChanged()
-            }
+        init {d
             binding.btnOpen.setOnClickListener {
                 onOpenAct?.invoke(actList[adapterPosition])
             }
-        }
-        private fun onMoreShow() = with(binding){
-            row1.visibility = View.VISIBLE
-            row2.visibility = View.VISIBLE
-            row3.visibility = View.VISIBLE
-            row4.visibility = View.VISIBLE
-            btnMore.visibility = View.GONE
-            btnOpen.visibility = View.VISIBLE
-        }
-        private fun onMoreHide() = with(binding){
-            row1.visibility = View.GONE
-            row2.visibility = View.GONE
-            row3.visibility = View.GONE
-            row4.visibility = View.GONE
-            btnMore.visibility = View.VISIBLE
-            btnOpen.visibility = View.GONE
         }
     }
 
