@@ -8,28 +8,26 @@ import com.example.entshptapplication.models.Naryad
 import kotlinx.coroutines.flow.Flow
 
 class UpakDbRepository(private val upakDao: UpakDao) {
-    fun getList(): Flow<List<UpakNaryadDb>>{
+    suspend fun getList(): List<UpakNaryadDb>{
         return upakDao.getAll()
     }
 
-    fun get(filter: String):Flow<List<UpakNaryadDb>>{
+    suspend fun get(filter: String):List<UpakNaryadDb>{
         return upakDao.get("%"+filter+"%")
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     suspend fun Insert(naryadDb: UpakNaryadDb){
         upakDao.insert(naryadDb)
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
+    suspend fun InsertAll(naryadsDb: List<UpakNaryadDb>){
+        upakDao.insertAll(naryadsDb)
+    }
+
     suspend fun Delete(naryadId:Int){
         upakDao.delete(naryadId)
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     suspend fun clear(){
         upakDao.clear()
     }

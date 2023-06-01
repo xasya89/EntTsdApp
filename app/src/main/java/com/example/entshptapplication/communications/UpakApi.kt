@@ -15,10 +15,10 @@ import retrofit2.http.Query
 
 interface UpakApi {
     @GET("api/upaklist")
-    fun Scan(@Query("barcode") barcode: String): Call<Naryad>
+    suspend fun Scan(@Query("barcode") barcode: String): Naryad
 
     @POST("api/upaklist/save")
-    fun Save(@Body model: RequestUpakModel): Call<ResponseBody>
+    suspend fun Save(@Body model: RequestUpakModel): ResponseBody
 
     companion object {
         var upakApi: UpakApi? = null

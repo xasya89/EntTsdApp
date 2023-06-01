@@ -96,10 +96,7 @@ class FindNaryadsFragment : Fragment() {
         loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(loginApi)).get(LoginViewModel::class.java)
 
         upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
-            UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository,
-            {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-            }
+            UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository
         )).get(UpakViewModel::class.java)
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
