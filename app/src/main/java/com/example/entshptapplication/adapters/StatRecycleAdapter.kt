@@ -1,5 +1,6 @@
 package com.example.entshptapplication.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,21 +17,23 @@ class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var naryadList = arrayListOf<StatNaryad?>()
 
     fun setNaryads(naryads: List<StatNaryad>){
+        Log.d("set naryads", naryads.size.toString())
         naryadList.clear()
         naryadList.addAll(naryads)
         notifyDataSetChanged()
     }
 
     fun appendNaryads(naryads: List<StatNaryad>){
-        if(naryadList.size > 0)
+        if(naryadList.size > 0 && naryadList.get(naryadList.size - 1) == null)
             naryadList.removeAt(naryadList.size - 1)
         naryadList.addAll(naryads)
         notifyDataSetChanged()
     }
 
+
     fun addLoading(){
         naryadList.add(null)
-        notifyItemInserted(naryadList.size - 1)
+            notifyItemInserted(naryadList.size - 1)
     }
 
     inner class StatViewHolder(item:View): RecyclerView.ViewHolder(item){

@@ -1,7 +1,9 @@
 package com.example.entshptapplication.adapters
 
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.sign
 
 class RecyclerViewLoadMoreScroll: RecyclerView.OnScrollListener {
     private var visibleThreshold = 5
@@ -34,10 +36,10 @@ class RecyclerViewLoadMoreScroll: RecyclerView.OnScrollListener {
         if (dy <= 0) return
 
         totalItemCount = mLayoutManager.itemCount
+
          if (mLayoutManager is LinearLayoutManager) {
             lastVisibleItem = (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
         }
-
         if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold) {
             mOnLoadMoreListener.onLoadMore()
             isLoading = true

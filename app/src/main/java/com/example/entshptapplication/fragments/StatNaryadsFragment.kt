@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import com.example.entshptapplication.adapters.OnLoadMoreListener
 import com.example.entshptapplication.adapters.RecyclerViewLoadMoreScroll
 import com.example.entshptapplication.adapters.StatRecycleAdapter
 import com.example.entshptapplication.communications.LoginApi
+import com.example.entshptapplication.communications.NewStatApi
 import com.example.entshptapplication.communications.StatApi
 import com.example.entshptapplication.databinding.FragmentStatNaryadsBinding
 import com.example.entshptapplication.dialogs.ConfirmDialog
@@ -37,8 +41,8 @@ class StatNaryadsFragment : Fragment() {
     private var selectedDate: String? = null
     private lateinit var binding: FragmentStatNaryadsBinding
     private lateinit var loginViewModel: LoginViewModel
-    private val statViewModel: StatViewModel by viewModels {
-        StatViewModelFactory(StatApi.getInstance(HOSTED_NAME),{})
+    private val statViewModel: StatViewModel by activityViewModels<StatViewModel> {
+        StatViewModelFactory(NewStatApi.getInstance(HOSTED_NAME))
     }
     private var adapter = StatRecycleAdapter()
     lateinit var scrollListener: RecyclerViewLoadMoreScroll
@@ -79,19 +83,21 @@ class StatNaryadsFragment : Fragment() {
 
         if (statType == "upak")
             statViewModel.upakNaryadList.observe(viewLifecycleOwner, {
-                if (isLoading == true)
-                    adapter.appendNaryads(it)
-                else
-                    adapter.setNaryads(it)
+                if(it.size>0)
+                    binding.statRecycleView.post {
+                        adapter.appendNaryads(it)
+                    }
                 isLoading = false
+                scrollListener.setLoaded()
             })
         if (statType == "shpt")
             statViewModel.shptNaryadList.observe(viewLifecycleOwner, {
-                if (isLoading == true)
-                    adapter.appendNaryads(it)
-                else
-                    adapter.setNaryads(it)
+                if(it.size>0)
+                    binding.statRecycleView.post {
+                        adapter.appendNaryads(it)
+                    }
                 isLoading = false
+                scrollListener.setLoaded()
             })
         sendRequest()
 
@@ -151,16 +157,19 @@ class StatNaryadsFragment : Fragment() {
     private fun loadMoreNaryads(){
         startPosition += 50
         endPosition += 50
-        adapter.addLoading()
+        binding.statRecycleView.post {
+            adapter.addLoading()
+        }
+
         isLoading = true
         sendRequest()
     }
 
     private fun sendRequest(){
         if(statType=="upak")
-            statViewModel.getUpakList(loginViewModel.login.value!!.id, filterString, selectedDate, startPosition, endPosition)
+            statViewModel.getUpakDetail()
         if(statType=="shpt")
-            statViewModel.getShptList(loginViewModel.login.value!!.id, filterString, selectedDate, startPosition, endPosition)
+            statViewModel.getShptDetail()
     }
 
     companion object {

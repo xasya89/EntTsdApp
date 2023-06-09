@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.example.entshptapplication.communications.NewStatApi
 import com.example.entshptapplication.communications.StatApi
 import com.example.entshptapplication.communications.UpakApi
 import com.example.entshptapplication.models.Naryad
@@ -12,128 +14,98 @@ import com.example.entshptapplication.models.StatNaryad
 import com.example.entshptapplication.models.StatSummary
 import com.example.entshptapplication.models.StatSummaryByDate
 import com.example.entshptapplication.repository.UpakDbRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response
 
-class StatViewModel(val statApi: StatApi, onError: ((String)->Unit)? = null): ViewModel() {
+class StatViewModel(val newStatApi: NewStatApi): ViewModel() {
+
     val summary = MutableLiveData<StatSummary>()
-    val summaryByDate = MutableLiveData<StatSummaryByDate>()
     val upakNaryadList = MutableLiveData<List<StatNaryad>>(listOf())
     val shptNaryadList = MutableLiveData<List<StatNaryad>>(listOf())
 
-    fun getSummary(idWorker: Int){
-        statApi.getSummary(idWorker).enqueue(object : Callback<StatSummary>{
-            override fun onResponse(
-                call: retrofit2.Call<StatSummary>,
-                response: Response<StatSummary>
-            ) {
-                if(response.isSuccessful)
-                    summary.value = response.body()
-            }
+    val error = MutableLiveData<String?>()
 
-            override fun onFailure(call: retrofit2.Call<StatSummary>, t: Throwable) {
-                Log.e("Get summary response error", t.message.toString())
-            }
+    private val workerId = MutableLiveData<Int?>(null)
+    private val selectDate = MutableLiveData<String?>(null)
+    private val shptStart = MutableLiveData<Int>(0);
+    private var upakStart = MutableLiveData<Int>(0);
 
-        })
+    fun getSummary(workerId: Int, selectDate: String? = null){
+        shptStart.value = 0
+        upakStart.value = 0
+        this.workerId.value = workerId
+        this.selectDate.value=selectDate
+        upakNaryadList.value = listOf()
+        shptNaryadList.value = listOf()
+
+        viewModelScope.launch (Dispatchers.IO + getCoroutineExceptionHandler()){
+            summary.postValue(newStatApi.getSummary(workerId, selectDate))
+        }
     }
 
-    fun getSummaryByDate(idWorker: Int, selectedDateStr: String?){
-        statApi.getSummaryByDate(idWorker, selectedDateStr).enqueue(object: Callback<StatSummaryByDate>{
-            override fun onResponse(
-                call: retrofit2.Call<StatSummaryByDate>,
-                response: Response<StatSummaryByDate>
-            ) {
-                if(response.isSuccessful)
-                    summaryByDate.value = response.body()
-            }
-
-            override fun onFailure(call: retrofit2.Call<StatSummaryByDate>, t: Throwable) {}
-
-        })
+    fun getUpakDetail(){
+        viewModelScope.launch (Dispatchers.IO + getCoroutineExceptionHandler()){
+            val list = mutableListOf<StatNaryad>()
+            list.addAll(upakNaryadList.value!!.toList())
+            val start = upakStart.value!!
+            val newlist = newStatApi.getDetail(workerId.value!!, 7, selectDate.value, start, 50)
+            if(newlist.size==0)
+                return@launch
+            list.addAll(newlist)
+            Log.d("detail size", list.size.toString())
+            upakNaryadList.postValue(list)
+            upakStart.postValue(start + 50)
+        }
     }
 
-    var lastFilterFind: String? = null
-    var lastFilterSelectDate: String? = null
-    var lastFilterStart: Int = 0
-    var lastFilterStop: Int = 50
-
-    fun getUpakList(idWorker: Int, find: String?, selectDate: String?, start: Int = 0, stop: Int = 50){
-        lastFilterFind = find
-        lastFilterSelectDate = selectDate
-        lastFilterStart = start
-        lastFilterStop = stop
-        statApi.getUpakNaryads(idWorker, find, selectDate, start, stop).enqueue(object: Callback<List<StatNaryad>>{
-            override fun onResponse(
-                call: retrofit2.Call<List<StatNaryad>>,
-                response: Response<List<StatNaryad>>
-            ) {
-                if(response.isSuccessful)
-                    upakNaryadList.value = response.body()
-            }
-
-            override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {
-                Log.e("Call error get upak stat", t.message.toString())
-            }
-        })
-    }
-
-    fun getShptList(idWorker: Int, find: String?, selectDate: String?, start: Int = 0, stop: Int = 50){
-        lastFilterFind = find
-        lastFilterSelectDate = selectDate
-        lastFilterStart = start
-        lastFilterStop = stop
-        statApi.getShptNaryads(idWorker, find, selectDate, start, stop).enqueue(object: Callback<List<StatNaryad>>{
-            override fun onResponse(
-                call: retrofit2.Call<List<StatNaryad>>,
-                response: Response<List<StatNaryad>>
-            ) {
-                if(response.isSuccessful)
-                    shptNaryadList.value = response.body()
-            }
-
-            override fun onFailure(call: retrofit2.Call<List<StatNaryad>>, t: Throwable) {
-                Log.e("Call error get shpt stat", t.message.toString())
-            }
-        })
+    fun getShptDetail(){
+        viewModelScope.launch (Dispatchers.IO + getCoroutineExceptionHandler()){
+            val list = mutableListOf<StatNaryad>()
+            list.addAll(shptNaryadList.value!!.toList())
+            val start = shptStart.value!!
+            val newlist = newStatApi.getDetail(workerId.value!!, 8, selectDate.value, start, 50)
+            if(newlist.size==0)
+                return@launch
+            list.addAll(newlist)
+            shptNaryadList.postValue(list)
+            shptStart.postValue(start + 50)
+            /*
+            val list = shptNaryadList.value
+            val start = shptStart.value!!
+            list!!.containsAll(newStatApi.getDetail(workerId.value!!, 8, selectDate.value, start, 50))
+            shptNaryadList.postValue(list!!)
+             */
+        }
     }
 
     fun deleteUpak(workerId: Int,naryadId: Int){
-        statApi.deleteUpakNaryad(naryadId, workerId).enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(
-                call: retrofit2.Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-                if(response.isSuccessful)
-                    getUpakList(workerId, lastFilterFind, lastFilterSelectDate, lastFilterStart, lastFilterStop)
-            }
-
-            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
-                Log.e("Error delete upak in stat", t.message.toString())
-            }
-        })
+        viewModelScope.launch (Dispatchers.IO + getCoroutineExceptionHandler()){
+            newStatApi.deleteUpakNaryad(naryadId, workerId)
+            upakNaryadList.postValue(upakNaryadList.value!!.filter { it.naryadId!=naryadId })
+        }
     }
 
-    fun deleteShpt(workerId: Int, naryadId: Int){
-        statApi.deleteShptNaryad(naryadId, workerId).enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(
-                call: retrofit2.Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-                if(response.isSuccessful)
-                    getShptList(workerId, lastFilterFind, lastFilterSelectDate, lastFilterStart, lastFilterStop)
-            }
+    fun deleteShpt(workerId: Int, naryadId: Int) {
+        viewModelScope.launch(Dispatchers.IO + getCoroutineExceptionHandler()) {
+            newStatApi.deleteShptNaryad(naryadId, workerId)
+            shptNaryadList.postValue(shptNaryadList.value!!.filter { it.naryadId != naryadId })
+        }
+    }
 
-            override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
-                Log.e("Error delete shpt in stat", t.message.toString())
-            }
-        })
+    private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { context, throwable ->
+            Log.e("Stat error", throwable.message.toString())
+            error.postValue(throwable.message.toString())
+        }
     }
 }
 
-class StatViewModelFactory constructor(private val statApi: StatApi, var onError: ((String)-> Unit)): ViewModelProvider.Factory {
+class StatViewModelFactory constructor(private val newStatApi: NewStatApi): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return StatViewModel(statApi, onError) as T
+        return StatViewModel(newStatApi) as T
     }
 }

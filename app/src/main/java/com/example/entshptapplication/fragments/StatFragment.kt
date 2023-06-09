@@ -8,13 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.entshptapplication.R
 import com.example.entshptapplication.adapters.StatViewPageAdapter
 import com.example.entshptapplication.communications.LoginApi
+import com.example.entshptapplication.communications.NewStatApi
 import com.example.entshptapplication.communications.StatApi
 import com.example.entshptapplication.databinding.FragmentStatBinding
 import com.example.entshptapplication.models.HOSTED_NAME
@@ -31,8 +35,8 @@ private const val ARG_CHOOSE_DATE = "ARG_CHOOSE_DATE"
 
 class StatFragment : Fragment() {
     private lateinit var binding: FragmentStatBinding
-    private val statViewModel:StatViewModel by viewModels {
-        StatViewModelFactory(StatApi.getInstance(HOSTED_NAME),{})
+    private val statViewModel:StatViewModel by activityViewModels<StatViewModel> {
+        StatViewModelFactory(NewStatApi.getInstance(HOSTED_NAME))
     }
     private lateinit var loginViewModel: LoginViewModel
     private var dateList: MutableList<String> = mutableListOf()
@@ -86,13 +90,18 @@ class StatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getWorkerId()
-
         statViewModel.getSummary(workerId)
         getSummaryByDate()
         statViewModel.summary.observe(viewLifecycleOwner,{
             binding.statChooseDate.text = if(filterDateChoose==null) { "с " + it.dateWithStr } else "на " + filterDateChoose
             binding.statSummeryPaymentPlus.text = it.paymentsPlus.toString()
             binding.statSummeryPaymentMinus.text = it.paymentsMinus.toString()
+            binding.statSummaryUpakCount.text = it.upakCount.toString()
+            binding.statSummaryUpakCost.text = it.upakCost.toString()
+            binding.statSummaryShptCount.text = it.shptCount.toString()
+            binding.statSummaryShptCost.text = it.shptCost.toString()
+
+            binding.statSummeryAmount.text = (it.paymentsMinus + it.paymentsPlus + it.upakCost + it.shptCost).toString()
 
             dateList.clear()
             dateList.addAll(it.shptCompliteDateListStr)
@@ -100,11 +109,9 @@ class StatFragment : Fragment() {
                 if(dateList.indexOf(dateOne)==-1)
                     dateList.add(dateOne)
         })
-        statViewModel.summaryByDate.observe(viewLifecycleOwner, {
-            binding.statSummaryUpakCount.text = it.upakCount.toString()
-            binding.statSummaryUpakCost.text = it.upakCost.toString()
-            binding.statSummaryShptCount.text = it.shptCount.toString()
-            binding.statSummaryShptCost.text = it.shptCost.toString()
+        statViewModel.error.observe(viewLifecycleOwner, Observer {
+            if(it!=null)
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG)
         })
     }
 
@@ -117,7 +124,7 @@ class StatFragment : Fragment() {
     }
 
     fun getSummaryByDate(){
-        statViewModel.getSummaryByDate(workerId, filterDateChoose)
+        statViewModel.getSummary(workerId, filterDateChoose)
     }
 
     //Кнопка выхода
