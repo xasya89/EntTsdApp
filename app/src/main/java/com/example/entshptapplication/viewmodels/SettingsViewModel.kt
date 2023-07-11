@@ -3,10 +3,14 @@ package com.example.entshptapplication.viewmodels
 import androidx.lifecycle.*
 import com.example.entshptapplication.models.ConnectionSetting
 import com.example.entshptapplication.repository.SettingsDbRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SettingsViewModel(private val repository: SettingsDbRepository): ViewModel( ) {
-    val setting:LiveData<ConnectionSetting> = repository.setting.asLiveData()
+    suspend fun getSetting() = withContext(Dispatchers.IO){
+        return@withContext repository.getSetting()
+    }
     fun insert(connectionSetting: ConnectionSetting) = viewModelScope.launch {
         repository.insert(connectionSetting)
     }

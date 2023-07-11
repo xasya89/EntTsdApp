@@ -16,6 +16,7 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
 import com.example.entshptapplication.viewmodels.KeyListenerViewModelFactory
 import com.example.entshptapplication.viewmodels.LoginViewModel
+import com.example.entshptapplication.viewmodels.LoginViewModelCreater
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 
 
@@ -63,12 +64,8 @@ class ActionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginApi = LoginApi.getInstance(HOSTED_NAME)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            loginApi
-        )
-        ).get(LoginViewModel::class.java)
-        loginViewModel.login.observe(viewLifecycleOwner, {
+        loginViewModel = LoginViewModelCreater.createViewModel(this)
+        loginViewModel.worker.observe(viewLifecycleOwner, {
             binding.workerFIOTextView.text = it?.fio
         })
 

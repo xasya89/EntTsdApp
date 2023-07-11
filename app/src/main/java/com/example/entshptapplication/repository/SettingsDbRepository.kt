@@ -10,6 +10,8 @@ class SettingsDbRepository(private val settingsDao: SettingsDao) {
     val settings: Flow<List<ConnectionSetting>> = settingsDao.getList()
     val setting: Flow<ConnectionSetting> = settingsDao.getOne()
 
+    suspend fun getSetting() = settingsDao.getSetting()
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(connectionSetting: ConnectionSetting){

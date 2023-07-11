@@ -92,8 +92,7 @@ class FindNaryadsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loginApi = LoginApi.getInstance(HOSTED_NAME)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(loginApi)).get(LoginViewModel::class.java)
+        loginViewModel = LoginViewModelCreater.createViewModel(this)
 
         upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
             UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository
@@ -176,7 +175,7 @@ class FindNaryadsFragment : Fragment() {
                 var idNaryads = mutableListOf<Int>()
                 for (naryad in naryads)
                     idNaryads.add(naryad.id)
-                shptOneViewModel.chooseList(actId = actShptId!!, idNaryads, loginViewModel.login.value?.id ?: 0, {
+                shptOneViewModel.chooseList(actId = actShptId!!, idNaryads, loginViewModel.worker.value?.id ?: 0, {
                     parentFragmentManager.commit {
                         replace(R.id.fragmentContainerView, ShptOneFragment.newInstance(actShptId!!))
                         setReorderingAllowed(true)

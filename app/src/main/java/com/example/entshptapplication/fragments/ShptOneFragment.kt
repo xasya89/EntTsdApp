@@ -91,7 +91,7 @@ class ShptOneFragment : Fragment() {
             }
         }
         binding.shptOneCompliteBtn.setOnClickListener {
-            shptOneViewModel.complite(idAct!!, loginViewModel.login.value!!.id, {
+            shptOneViewModel.complite(idAct!!, loginViewModel.worker.value!!.id, {
                 parentFragmentManager.commit {
                     replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
                     setReorderingAllowed(true)
@@ -138,11 +138,7 @@ class ShptOneFragment : Fragment() {
     }
 
     fun initViewModels(){
-        val loginApi = LoginApi.getInstance(HOSTED_NAME)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            loginApi
-        )
-        ).get(LoginViewModel::class.java)
+        loginViewModel = LoginViewModelCreater.createViewModel(this)
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
         shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
@@ -153,7 +149,7 @@ class ShptOneFragment : Fragment() {
         keyListenerViewModel.barCode.value = ""
         keyListenerViewModel.barCode.observe(viewLifecycleOwner,{
             if(it!="")
-                shptOneViewModel.scan(idAct!!, it, loginViewModel.login.value!!.id)
+                shptOneViewModel.scan(idAct!!, it, loginViewModel.worker.value!!.id)
         })
         clearBarCode()
 
@@ -179,7 +175,7 @@ class ShptOneFragment : Fragment() {
         val btnDelete = dialog?.findViewById<Button>(R.id.shptActionsDialogDelete)
         naryadNumTV?.text = actDoor.num
         btnDelete?.setOnClickListener {
-            shptOneViewModel.delete(idAct!!, actDoor, loginViewModel.login.value?.id!!)
+            shptOneViewModel.delete(idAct!!, actDoor, loginViewModel.worker.value?.id!!)
             dialog.dismiss()
         }
         btnClose?.setOnClickListener { dialog.dismiss() }

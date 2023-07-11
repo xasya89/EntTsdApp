@@ -23,6 +23,7 @@ import com.example.entshptapplication.communications.StatApi
 import com.example.entshptapplication.databinding.FragmentStatBinding
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.viewmodels.LoginViewModel
+import com.example.entshptapplication.viewmodels.LoginViewModelCreater
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 import com.example.entshptapplication.viewmodels.StatViewModel
 import com.example.entshptapplication.viewmodels.StatViewModelFactory
@@ -116,11 +117,8 @@ class StatFragment : Fragment() {
     }
 
     fun getWorkerId(){
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginApi.getInstance(HOSTED_NAME)
-        )
-        ).get(LoginViewModel::class.java)
-        workerId = loginViewModel.login.value?.id ?: 0;
+        loginViewModel = LoginViewModelCreater.createViewModel(this)
+        workerId = loginViewModel.worker.value?.id ?: 0;
     }
 
     fun getSummaryByDate(){

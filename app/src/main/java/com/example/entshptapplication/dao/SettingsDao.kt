@@ -15,6 +15,9 @@ interface SettingsDao {
     fun getOne(): Flow<ConnectionSetting>
 
     @Query("SELECT * FROM connectionsettings")
+    suspend fun getSetting(): ConnectionSetting?
+
+    @Query("SELECT * FROM connectionsettings")
     fun getList(): Flow<List<ConnectionSetting>>
 
     @Insert

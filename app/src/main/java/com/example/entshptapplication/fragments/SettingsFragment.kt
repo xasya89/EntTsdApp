@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.entshptapplication.R
 import com.example.entshptapplication.R.*
@@ -19,6 +20,7 @@ import com.example.entshptapplication.databinding.FragmentSettingsBinding
 import com.example.entshptapplication.models.ConnectionSetting
 import com.example.entshptapplication.viewmodels.SettingsViewModel
 import com.example.entshptapplication.viewmodels.SettingsViewModelFactory
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
 
@@ -48,16 +50,15 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val defaulHost = "192.168.1.200"
-        settingsViewModel.setting.observe(viewLifecycleOwner,{
-            if(it==null){
+        lifecycleScope.launch {
+            val setting = settingsViewModel.getSetting()
+            if(setting==null){
                 settingsViewModel.insert(ConnectionSetting(ServerHost = defaulHost))
                 binding.serverHostSettingEdit.setText(defaulHost)
-            } else {
-                binding.serverHostSettingEdit.setText(it.ServerHost)
+            }else{
+                binding.serverHostSettingEdit.setText(setting.ServerHost)
             }
-
         }
-        )
     }
 
     companion object {

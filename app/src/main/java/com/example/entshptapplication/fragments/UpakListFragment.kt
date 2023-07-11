@@ -72,10 +72,7 @@ class UpakListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProvider(activity?.viewModelStore!!, LoginViewModelFactory(
-            LoginApi.getInstance(HOSTED_NAME)
-        )
-        ).get(LoginViewModel::class.java)
+        loginViewModel = LoginViewModelCreater.createViewModel(this)
 
         upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
             UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository
@@ -158,7 +155,7 @@ class UpakListFragment : Fragment() {
             .setMessage("Отправить наряды на сервер?")
             .setNegativeButton("нет",{dialog, i -> dialog.cancel()})
             .setPositiveButton("да",{dialog, i ->
-                upakViewModel.save(loginViewModel.login.value?.id!!, {
+                upakViewModel.save(loginViewModel.worker.value?.id!!, {
                     upakViewModel.clearUpakList({
                         parentFragmentManager.commit {
                             replace(R.id.fragmentContainerView, ActionsFragment.newInstance())

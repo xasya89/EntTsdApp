@@ -26,6 +26,7 @@ import com.example.entshptapplication.dialogs.ConfirmDialog
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.StatNaryad
 import com.example.entshptapplication.viewmodels.LoginViewModel
+import com.example.entshptapplication.viewmodels.LoginViewModelCreater
 import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 import com.example.entshptapplication.viewmodels.StatViewModel
 import com.example.entshptapplication.viewmodels.StatViewModelFactory
@@ -71,11 +72,7 @@ class StatNaryadsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProvider(
-            activity?.viewModelStore!!, LoginViewModelFactory(
-                LoginApi.getInstance(HOSTED_NAME)
-            )
-        ).get(LoginViewModel::class.java)
+        loginViewModel = LoginViewModelCreater.createViewModel(this)
 
         adapter.onDelete = {
             onAlertDeleteDialog(view, it.naryadId)
@@ -127,9 +124,9 @@ class StatNaryadsFragment : Fragment() {
         builder.setIcon(R.drawable.ic_baseline_delete_green_30)
         builder.setPositiveButton("да") { dialog, id ->
             if (statType == "upak")
-                statViewModel.deleteUpak(loginViewModel.login.value?.id ?: 0, naryadId)
+                statViewModel.deleteUpak(loginViewModel.worker.value?.id ?: 0, naryadId)
             if (statType == "shpt")
-                statViewModel.deleteShpt(loginViewModel.login.value?.id ?: 0, naryadId)
+                statViewModel.deleteShpt(loginViewModel.worker.value?.id ?: 0, naryadId)
             dialog.cancel()
         }
         builder.setNegativeButton(
