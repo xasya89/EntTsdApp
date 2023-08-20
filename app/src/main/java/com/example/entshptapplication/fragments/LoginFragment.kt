@@ -63,8 +63,10 @@ class LoginFragment : Fragment() {
 
         lifecycleScope.launch {
             val setting = settingsViewModel.getSetting()
-            if(setting==null)
-                openSettingsFrament()
+            if(setting==null) {
+                //openSettingsFrament()
+                return@launch
+            }
             binding.settingsBtn.text = setting!!.ServerHost
             HOSTED_NAME = "http://"+setting!!.ServerHost+":5226/"
 

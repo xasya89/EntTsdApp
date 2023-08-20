@@ -75,7 +75,7 @@ class StatNaryadsFragment : Fragment() {
         loginViewModel = LoginViewModelCreater.createViewModel(this)
 
         adapter.onDelete = {
-            onAlertDeleteDialog(view, it.naryadId)
+            onAlertDeleteDialog(view, it)
         }
 
         if (statType == "upak")
@@ -117,7 +117,9 @@ class StatNaryadsFragment : Fragment() {
          */
     }
 
-    private fun onAlertDeleteDialog(view: View, naryadId: Int){
+    private fun onAlertDeleteDialog(view: View, naryad: StatNaryad){
+        Log.d("Naryad", naryad.shet)
+        val naryadId = naryad.naryadId
         val builder = AlertDialog.Builder(view.context)
         builder.setTitle("Удалить наряд?")
         builder.setMessage("")
@@ -128,6 +130,7 @@ class StatNaryadsFragment : Fragment() {
             if (statType == "shpt")
                 statViewModel.deleteShpt(loginViewModel.worker.value?.id ?: 0, naryadId)
             dialog.cancel()
+            adapter.deleteNaryad(naryadId)
         }
         builder.setNegativeButton(
             "Отмена") { dialog, id ->

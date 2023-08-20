@@ -16,6 +16,7 @@ import com.example.entshptapplication.models.StatSummaryByDate
 import com.example.entshptapplication.repository.UpakDbRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Callback
@@ -33,7 +34,6 @@ class StatViewModel(val newStatApi: NewStatApi): ViewModel() {
     private val selectDate = MutableLiveData<String?>(null)
     private val shptStart = MutableLiveData<Int>(0);
     private var upakStart = MutableLiveData<Int>(0);
-
     fun getSummary(workerId: Int, selectDate: String? = null){
         shptStart.value = 0
         upakStart.value = 0
@@ -43,8 +43,15 @@ class StatViewModel(val newStatApi: NewStatApi): ViewModel() {
         shptNaryadList.value = listOf()
 
         viewModelScope.launch (Dispatchers.IO + getCoroutineExceptionHandler()){
-            summary.postValue(newStatApi.getSummary(workerId, selectDate))
+            selectSummary(workerId, selectDate)
         }
+    }
+
+    suspend fun selectSummary(workerId: Int, selectDate: String?){
+        Log.d("Start get summary","")
+        val result = newStatApi.getSummary(workerId, selectDate)
+        summary.postValue(result)
+        Log.d("Stat shpt count",result.shptCount.toString())
     }
 
     fun getUpakDetail(){
@@ -86,6 +93,8 @@ class StatViewModel(val newStatApi: NewStatApi): ViewModel() {
         viewModelScope.launch (Dispatchers.IO + getCoroutineExceptionHandler()){
             newStatApi.deleteUpakNaryad(naryadId, workerId)
             upakNaryadList.postValue(upakNaryadList.value!!.filter { it.naryadId!=naryadId })
+            delay(500)
+            selectSummary(workerId, selectDate.value)
         }
     }
 
@@ -93,6 +102,8 @@ class StatViewModel(val newStatApi: NewStatApi): ViewModel() {
         viewModelScope.launch(Dispatchers.IO + getCoroutineExceptionHandler()) {
             newStatApi.deleteShptNaryad(naryadId, workerId)
             shptNaryadList.postValue(shptNaryadList.value!!.filter { it.naryadId != naryadId })
+            delay(500)
+            selectSummary(workerId, selectDate.value)
         }
     }
 

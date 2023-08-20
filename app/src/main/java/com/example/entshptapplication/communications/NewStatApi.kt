@@ -10,16 +10,16 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NewStatApi {
-    @GET("api/NewStat/summary/{workerId}")
+    @GET("api/new-stat/summary/{workerId}")
     suspend fun getSummary(@Path("workerId") workerId: Int, @Query("selectDate") selectDate: String?): StatSummary
 
-    @GET("api/NewStat/details/{workerId}")
+    @GET("api/new-stat/details/{workerId}")
     suspend fun getDetail(@Path("workerId") workerId: Int, @Query("step") step:Int, @Query("date") date:String?, @Query("start") start: Int, @Query("count") count: Int): List<StatNaryad>
 
-    @DELETE("api/stat/upak/{naryadId}")
+    @DELETE("api/new-stat/upak/{naryadId}")
     suspend fun deleteUpakNaryad(@Path("naryadId") naryadId:Int, @Query("workerId") workerId: Int)
 
-    @DELETE("api/stat/shpt/{naryadId}")
+    @DELETE("api/new-stat/shpt/{naryadId}")
     suspend fun deleteShptNaryad(@Path("naryadId") naryadId:Int, @Query("workerId") workerId: Int)
 
     companion object {

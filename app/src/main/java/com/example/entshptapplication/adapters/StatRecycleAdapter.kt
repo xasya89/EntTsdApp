@@ -17,7 +17,6 @@ class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var naryadList = arrayListOf<StatNaryad?>()
 
     fun setNaryads(naryads: List<StatNaryad>){
-        Log.d("set naryads", naryads.size.toString())
         naryadList.clear()
         naryadList.addAll(naryads)
         notifyDataSetChanged()
@@ -30,6 +29,12 @@ class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun deleteNaryad(naryadId: Int){
+        var naryad = naryadList.find { it!!.naryadId==naryadId }
+        if(naryad==null) return
+        naryadList.remove(naryad)
+        notifyDataSetChanged()
+    }
 
     fun addLoading(){
         naryadList.add(null)
@@ -46,7 +51,7 @@ class StatRecycleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
         init {
             binding.shptOneActionsBtn.setOnClickListener {
-                onDelete?.invoke(naryadList[adapterPosition]!!)
+                onDelete?.invoke(naryadList.get(adapterPosition)!!)
             }
         }
     }
