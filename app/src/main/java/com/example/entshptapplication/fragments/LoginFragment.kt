@@ -68,7 +68,10 @@ class LoginFragment : Fragment() {
                 return@launch
             }
             binding.settingsBtn.text = setting!!.ServerHost
-            HOSTED_NAME = "http://"+setting!!.ServerHost+":5226/"
+            if(setting!!.ServerHost.indexOf(":")>-1)
+                HOSTED_NAME = "http://"+setting!!.ServerHost+"/"
+            else
+                HOSTED_NAME = "http://"+setting!!.ServerHost+":5226/"
 
             loginViewModel = LoginViewModelCreater.createViewModel(this@LoginFragment)
             loginViewModel.error.observe(viewLifecycleOwner, {error ->

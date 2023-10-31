@@ -1,11 +1,9 @@
 package com.example.entshptapplication.fragments
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,16 +18,18 @@ import com.example.entshptapplication.R
 import com.example.entshptapplication.TSDApplication
 import com.example.entshptapplication.adapters.FindNaryadsRecycleAdapter
 import com.example.entshptapplication.communications.FindNaryadsApi
-import com.example.entshptapplication.communications.LoginApi
-import com.example.entshptapplication.communications.ShptApi
-import com.example.entshptapplication.communications.UpakApi
+import com.example.entshptapplication.shpt.api.ShptApi
+import com.example.entshptapplication.upak.api.UpakApi
 import com.example.entshptapplication.databinding.FragmentFindNaryadsBinding
-import com.example.entshptapplication.models.FindNaryadModel
 import com.example.entshptapplication.models.HOSTED_NAME
-import com.example.entshptapplication.models.Naryad
+import com.example.entshptapplication.shpt.ShptOneFragment
+import com.example.entshptapplication.shpt.ShptOneViewModel
+import com.example.entshptapplication.shpt.ShptOneViewModelFactory
+import com.example.entshptapplication.upak.UpakListFragment
+import com.example.entshptapplication.upak.UpakViewModel
+import com.example.entshptapplication.upak.UpakViewModelFactory
 import com.example.entshptapplication.viewmodels.*
 import kotlinx.coroutines.*
-import kotlin.math.log
 
 private const val ARG_PARAM1 = "type-screen"
 private const val ARG_PARAM_ID_ACT = "idAct"
@@ -96,12 +96,14 @@ class FindNaryadsFragment : Fragment() {
 
         upakViewModel = ViewModelProvider(activity?.viewModelStore!!, UpakViewModelFactory(
             UpakApi.getInstance(HOSTED_NAME), (requireActivity().application  as TSDApplication).upakDbRepository
-        )).get(UpakViewModel::class.java)
+        )
+        ).get(UpakViewModel::class.java)
 
         val shptApi = ShptApi.getInstance(HOSTED_NAME)
         shptOneViewModel = ViewModelProvider(activity?.viewModelStore!!, ShptOneViewModelFactory(
             shptApi, (requireActivity().application  as TSDApplication).shptDbRepository
-        )).get(ShptOneViewModel::class.java)
+        )
+        ).get(ShptOneViewModel::class.java)
 
         val findNaryadsApi = FindNaryadsApi.getInstance(HOSTED_NAME)
         findNaryadsViewModel = FindNaryadsViewModel(findNaryadsApi)

@@ -4,8 +4,8 @@ import android.app.Application
 import com.example.entshptapplication.dao.AppDatabase
 import com.example.entshptapplication.repository.LoginDbRepository
 import com.example.entshptapplication.repository.SettingsDbRepository
-import com.example.entshptapplication.repository.ShptDbRepository
-import com.example.entshptapplication.repository.UpakDbRepository
+import com.example.entshptapplication.shpt.repository.ShptDbRepository
+import com.example.entshptapplication.upak.repository.UpakDbRepository
 
 class TSDApplication:Application() {
 

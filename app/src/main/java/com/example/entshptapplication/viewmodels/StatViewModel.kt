@@ -1,26 +1,17 @@
 package com.example.entshptapplication.viewmodels
 
-import android.telecom.Call
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.communications.NewStatApi
-import com.example.entshptapplication.communications.StatApi
-import com.example.entshptapplication.communications.UpakApi
-import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.models.StatNaryad
 import com.example.entshptapplication.models.StatSummary
-import com.example.entshptapplication.models.StatSummaryByDate
-import com.example.entshptapplication.repository.UpakDbRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
-import retrofit2.Callback
-import retrofit2.Response
 
 class StatViewModel(val newStatApi: NewStatApi): ViewModel() {
 

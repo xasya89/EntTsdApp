@@ -6,9 +6,11 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.entshptapplication.databaseModels.LoginDb
-import com.example.entshptapplication.databaseModels.ShptDoorDb
-import com.example.entshptapplication.databaseModels.UpakNaryadDb
+import com.example.entshptapplication.shpt.dbModels.ShptDoorDb
+import com.example.entshptapplication.upak.dbModels.UpakNaryadDb
 import com.example.entshptapplication.models.ConnectionSetting
+import com.example.entshptapplication.shpt.dao.ShptDao
+import com.example.entshptapplication.upak.dao.UpakDao
 
 
 @androidx.room.Database(entities = arrayOf(ConnectionSetting::class, UpakNaryadDb::class, ShptDoorDb::class, LoginDb::class), version = 4, exportSchema = false)
