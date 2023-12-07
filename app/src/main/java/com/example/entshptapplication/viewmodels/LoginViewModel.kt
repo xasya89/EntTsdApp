@@ -77,7 +77,8 @@ class LoginViewModelCreater{
     companion object{
         fun createViewModel(fragment: Fragment):LoginViewModel{
             val loginDbRepository = (fragment.requireActivity().application as TSDApplication).loginDbRepository
-            val loginApi = LoginApi.getInstance(HOSTED_NAME)
+            val loginApi = LoginApi.getInstance("")
+            Log.d("INIT_LOGIN_VIEWMODEL", "INIT")
             return ViewModelProvider(fragment.requireActivity().viewModelStore, LoginViewModelFactory(
                 loginApi, loginDbRepository
             )).get(LoginViewModel::class.java)

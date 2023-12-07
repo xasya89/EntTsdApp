@@ -33,7 +33,7 @@
         android:id="@+id/upakActionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:width="@dimen/actionBtnWidth"
         android:height="@dimen/actionBtnHeight"
         android:text="Упаковка"
@@ -45,13 +45,26 @@
         android:id="@+id/statActionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:width="@dimen/actionBtnWidth"
         android:height="@dimen/actionBtnHeight"
         android:text="Статистика"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/upakActionBtn" />
+
+    <Button
+        android:id="@+id/findActionBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:width="@dimen/actionBtnWidth"
+        android:height="@dimen/actionBtnHeight"
+        android:text="Поиск наряда"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statActionBtn" />
 
     <Button
         android:id="@+id/exitActionBtn"

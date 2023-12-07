@@ -1,5 +1,6 @@
 package com.example.entshptapplication.communications
 
+import com.example.entshptapplication.R
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -44,7 +45,7 @@ class RetrofitCreator {
                 */
                 .build()
 
-            val retrofit = Retrofit.Builder().baseUrl(hostedName)
+            val retrofit = Retrofit.Builder().baseUrl("http://192.168.1.200:5226/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

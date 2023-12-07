@@ -54,6 +54,7 @@ class LoginFragment : Fragment() {
             loginViewModel.authorize(binding.smartCartEdit.text.toString())
         }
 
+
         return  binding.root
     }
     @Suppress
@@ -62,6 +63,7 @@ class LoginFragment : Fragment() {
 
 
         lifecycleScope.launch {
+            /*
             val setting = settingsViewModel.getSetting()
             if(setting==null) {
                 //openSettingsFrament()
@@ -69,14 +71,16 @@ class LoginFragment : Fragment() {
             }
             binding.settingsBtn.text = setting!!.ServerHost
             HOSTED_NAME = "http://"+setting!!.ServerHost+":5226/"
-
+            */
             loginViewModel = LoginViewModelCreater.createViewModel(this@LoginFragment)
+
             loginViewModel.error.observe(viewLifecycleOwner, {error ->
                 if(error!=null && error!="")
                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
             })
 
             loginViewModel.worker.observe(viewLifecycleOwner, {
+                Log.d("WORKER", it.toString())
                 if(it!=null) openActionFragment()
             })
 

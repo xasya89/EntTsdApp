@@ -1,6 +1,5 @@
 package com.example.entshptapplication.fragments
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
@@ -9,15 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import com.example.entshptapplication.NaryadInfo.NaryadInfoFragment
 import com.example.entshptapplication.R
-import com.example.entshptapplication.communications.LoginApi
 import com.example.entshptapplication.databinding.FragmentActionsBinding
-import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
 import com.example.entshptapplication.viewmodels.KeyListenerViewModelFactory
 import com.example.entshptapplication.viewmodels.LoginViewModel
 import com.example.entshptapplication.viewmodels.LoginViewModelCreater
-import com.example.entshptapplication.viewmodels.LoginViewModelFactory
 
 
 class ActionsFragment : Fragment() {
@@ -45,6 +42,10 @@ class ActionsFragment : Fragment() {
 
         binding.statActionBtn.setOnClickListener {
             transitionToFragment(StatFragment.newInstance())
+        }
+
+        binding.findActionBtn.setOnClickListener {
+            transitionToFragment((NaryadInfoFragment.newInstance()))
         }
 
         binding.exitActionBtn.setOnClickListener {
