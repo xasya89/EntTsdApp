@@ -9,8 +9,8 @@ interface NaryadInfoApi {
     @GET("api/naryad-info/getByNaryadNum")
     suspend fun Get(@Query("findStr") findStr: String): NaryadInfoModel?
 
-    @GET("api/naryad-info/getByNaryadCompliteId")
-    suspend fun Get(@Query("naryadCompliteId") naryadCompliteId: Int): NaryadInfoModel?
+    @GET("api/naryad-info/getByNaryadId")
+    suspend fun GetById(@Query("naryadId") naryadId: String): NaryadInfoModel?
 
     companion object {
         var naryadInfoApi: NaryadInfoApi? = null

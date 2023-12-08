@@ -24,10 +24,10 @@ class NaryadInfoViewModel constructor(private val findApi: NaryadInfoApi): ViewM
         }
     }
 
-    fun getByNaryadCompliteId(barcode: String){
-        val naryadCompliteId: Int = barcode.lowercase().replace("n","").replace("e","").toInt()
+    fun getByNaryadId(barcode: String){
+        val naryadId: String = barcode.lowercase().replace("n","").replace("e","")
         viewModelScope.launch(getCoroutineExceptionHandler()) {
-            val naryad = findApi.Get(naryadCompliteId)
+            val naryad = findApi.GetById(naryadId)
             findNaryad.postValue(naryad)
         }
     }

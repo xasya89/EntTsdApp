@@ -58,7 +58,7 @@ class NaryadInfoFragment : Fragment() {
         keyListenerViewModel.barCode.value = ""
         keyListenerViewModel.barCode.observe(viewLifecycleOwner, {
             if(it!=null && it!="")
-                viewModel.getByNaryadCompliteId(it!!)
+                viewModel.getByNaryadId(it!!)
         })
     }
 
