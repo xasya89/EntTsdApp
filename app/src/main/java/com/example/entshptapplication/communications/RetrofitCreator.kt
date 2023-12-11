@@ -1,13 +1,12 @@
 package com.example.entshptapplication.communications
 
-import com.example.entshptapplication.R
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 import java.util.concurrent.TimeUnit
+
 
 class RetrofitCreator {
     companion object {
@@ -44,10 +43,12 @@ class RetrofitCreator {
                 }
                 */
                 .build()
-
+            val gsonConverter = GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .create()
             val retrofit = Retrofit.Builder().baseUrl("http://192.168.1.200:5226/")
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gsonConverter))
                 .build()
             return  retrofit;
         }

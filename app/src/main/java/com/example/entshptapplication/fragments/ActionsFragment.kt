@@ -8,9 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
-import com.example.entshptapplication.NaryadInfo.NaryadInfoFragment
+import com.example.entshptapplication.ui.naryadInfo.NaryadInfoFragment
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentActionsBinding
+import com.example.entshptapplication.ui.statistics.StatisticsLoaderFragment
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
 import com.example.entshptapplication.viewmodels.KeyListenerViewModelFactory
 import com.example.entshptapplication.viewmodels.LoginViewModel
@@ -41,7 +42,8 @@ class ActionsFragment : Fragment() {
         }
 
         binding.statActionBtn.setOnClickListener {
-            transitionToFragment(StatFragment.newInstance())
+            transitionToFragment((StatisticsLoaderFragment.newInstance()))
+            //transitionToFragment(StatFragment.newInstance())
         }
 
         binding.findActionBtn.setOnClickListener {
