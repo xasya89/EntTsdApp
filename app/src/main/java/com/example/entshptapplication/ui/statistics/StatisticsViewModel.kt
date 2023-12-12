@@ -5,41 +5,57 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.models.HOSTED_NAME
-import com.example.entshptapplication.ui.naryadInfo.NaryadInfoViewModel
-import com.example.entshptapplication.ui.naryadInfo.api.NaryadInfoApi
 import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
-import com.example.entshptapplication.ui.statistics.models.CreateModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.HttpURLConnection
+import java.util.Date
 
-class StatisticsViewModel(val statisticsApi: StatisticsApi): ViewModel() {
-    val summary = MutableLiveData<SummaryModel?>(null)
-    private val uuidJob = MutableLiveData<String>("")
-    fun addJob(workerId: Int){
-        summary.value = null
-        viewModelScope.launch (Dispatchers.IO){
-            val uuid = statisticsApi.addJob(CreateModel(workerId)).uuid
-            uuidJob.postValue(uuid)
+class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
+    val summary = MutableLiveData<SummaryModel>()
+    val dates = MutableLiveData<MutableList<Date>>(mutableListOf())
+    val selectedDay = MutableLiveData<Date>(null)
+
+    fun setSummary(_summary: SummaryModel){
+        summary.value=_summary
+        val dayList = mutableListOf<Date>()
+        summary.value!!.paymentDays.forEach {pay ->
+            if(!dayList.any { it == pay.day })
+                dayList.add(pay.day)
         }
+        summary.value!!.upakDays.forEach {pay ->
+            if(!dayList.any { it == pay.day })
+                dayList.add(pay.day)
+        }
+        summary.value!!.shptDays.forEach {pay ->
+            if(!dayList.any { it == pay.day })
+                dayList.add(pay.day)
+        }
+        dayList.sort()
+        dates.value = dayList
     }
 
-    fun getResult(){
-        val uuid = uuidJob.value
-        if(uuid==null || uuid=="") return
-        viewModelScope.launch (Dispatchers.IO) {
-            val response = statisticsApi.getStatistic(uuid)
-            if(response.code()==HttpURLConnection.HTTP_OK && response.body()!=null){
-                Log.d("Response", "Success")
-                summary.postValue(response.body())
-            }else
-                Log.d("Response", response.body().toString())
-            //summary.postValue(result)
-        }
+    fun getSummaryOnDay(): SummaryModel{
+        Log.d("Select", selectedDay.value.toString())
+        val _summary = summary.value!!
+        if(selectedDay.value==null) return _summary
+
+        val paymentsSum = _summary.paymentDays.find { it.day==selectedDay.value!! }?.sum ?: 0.0
+        val upakSum = _summary.upakDays.find { it.day==selectedDay.value!! }?.compliteSum ?: 0.0
+        val upakCount = _summary.upakDays.find { it.day==selectedDay.value!! }?.compliteCount ?: 0
+        val shptSum = _summary.shptDays.find { it.day==selectedDay.value!! }?.compliteSum ?: 0.0
+        val shptCount = _summary.shptDays.find { it.day==selectedDay.value!! }?.compliteCount ?: 0
+        return SummaryModel(
+            _summary.workerId,
+            _summary.lastActSum,
+            paymentsSum,
+            upakSum,
+            shptSum,
+            paymentDays = _summary.paymentDays,
+            upakDays = _summary.upakDays,
+            shptDays = _summary.shptDays
+        )
     }
+
 }
 
 class StatisticsViewModelFactory constructor(private val api: StatisticsApi): ViewModelProvider.Factory{

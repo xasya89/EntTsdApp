@@ -7,18 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.commit
+import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentStatisticsLoaderBinding
+import com.example.entshptapplication.fragments.ActionsFragment
 import com.example.entshptapplication.viewmodels.LoginViewModelCreater
 
 class StatisticsLoaderFragment : Fragment() {
 
     private lateinit var binding: FragmentStatisticsLoaderBinding
-    private lateinit var statisticsViewModel: StatisticsViewModel
+    private lateinit var creatorViewModle: StatisticsCreatorViewModel
     private var workerId: Int = 0
     private val timer = object :CountDownTimer(20_000, 4_000){
         override fun onTick(p0: Long) {
             onPause()
-            statisticsViewModel.getResult()
+            creatorViewModle.getResult()
             onStart()
         }
 
@@ -36,17 +39,31 @@ class StatisticsLoaderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentStatisticsLoaderBinding.inflate(inflater)
+        binding.statisticsLoaderBtnCancel.setOnClickListener {
+            timer.onFinish()
+            timer.cancel()
+            creatorViewModle.cancelJob()
+            parentFragmentManager.commit {
+                replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                setReorderingAllowed(true)
+            }
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getWorkerId()
-        statisticsViewModel = StatisticsViewModelFactory.Create(this)
-        statisticsViewModel.addJob(workerId)
-        statisticsViewModel.summary.observe(viewLifecycleOwner, {
-            if(it!=null)
-                Toast.makeText(context, "Getting result", Toast.LENGTH_LONG).show()
+        creatorViewModle = StatisticsCreatorViewModelFactory.Create(this)
+        creatorViewModle.addJob(workerId)
+        creatorViewModle.summary.observe(viewLifecycleOwner, {
+            if(it!=null){
+                timer.cancel()
+                parentFragmentManager.commit {
+                    replace(R.id.fragmentContainerView, StatisticsFragment.newInstance())
+                    setReorderingAllowed(true)
+                }
+            }
         })
         timer.start()
 
