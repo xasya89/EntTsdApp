@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
@@ -35,7 +37,6 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
     }
 
     fun getSummaryOnDay(): SummaryModel{
-        Log.d("Select", selectedDay.value.toString())
         val _summary = summary.value!!
         if(selectedDay.value==null) return _summary
 
@@ -56,6 +57,13 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
         )
     }
 
+    fun getNaryads(){
+        viewModelScope.launch {
+            val _summary = summary.value!!
+            val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), null, 0, 100)
+
+        }
+    }
 }
 
 class StatisticsViewModelFactory constructor(private val api: StatisticsApi): ViewModelProvider.Factory{

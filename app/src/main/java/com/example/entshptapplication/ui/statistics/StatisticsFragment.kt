@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableLayout
 import androidx.fragment.app.commit
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentStatisticsBinding
 import com.example.entshptapplication.fragments.ActionsFragment
+import com.google.android.material.tabs.TabLayout
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Date
 
 class StatisticsFragment : Fragment() {
 
@@ -38,6 +41,7 @@ class StatisticsFragment : Fragment() {
         statisticsViewModel = StatisticsViewModelFactory.Create(this)
         statisticsViewModel.setSummary(summary!!)
         setSummaryValuesInTextView()
+        loadNaryads()
     }
 
     private fun setSummaryValuesInTextView() = with(binding){
@@ -47,27 +51,39 @@ class StatisticsFragment : Fragment() {
         statisticsUpakSum.text = summary.upakSumAll.toString()
         statisticsShptSum.text = summary.shptSumAll.toString()
         val dateFormat = SimpleDateFormat("dd.MM.YY")
+
         statisticsSelectedDateTv.text =
             (if(statisticsViewModel.selectedDay.value==null) "от " else "") +
             dateFormat.format( statisticsViewModel.selectedDay.value ?: statisticsViewModel.dates.value!!.min())
     }
 
-    private fun initBinding(){
-        binding.apply {
-            statisticsChooseDateBtn.setOnClickListener {
-                parentFragmentManager.commit {
-                    replace(R.id.fragmentContainerView, StatisticsChooseDateFragment.newInstance())
-                    setReorderingAllowed(true)
-                }
-            }
+    private fun  loadNaryads(){
+        statisticsViewModel.getNaryads()
 
-            statisticsChooseDateCloseBtn.setOnClickListener {
-                parentFragmentManager.commit {
-                    replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
-                    setReorderingAllowed(true)
-                }
+    }
+
+    private fun initBinding() = with(binding) {
+        statisticsChooseDateBtn.setOnClickListener {
+            parentFragmentManager.commit {
+                replace(R.id.fragmentContainerView, StatisticsChooseDateFragment.newInstance())
+                setReorderingAllowed(true)
             }
         }
+
+        statisticsChooseDateCloseBtn.setOnClickListener {
+            parentFragmentManager.commit {
+                replace(R.id.fragmentContainerView, ActionsFragment.newInstance())
+                setReorderingAllowed(true)
+            }
+        }
+
+        statisticsTabView.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                Log.d("Select tab", tab?.text.toString())
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     companion object {

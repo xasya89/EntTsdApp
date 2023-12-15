@@ -49,6 +49,7 @@ class RetrofitCreator {
             val retrofit = Retrofit.Builder().baseUrl("http://192.168.1.200:5226/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gsonConverter))
+                .addConverterFactory(QueryConverterFactory.create())
                 .build()
             return  retrofit;
         }
