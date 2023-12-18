@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
+import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -16,6 +17,7 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
     val summary = MutableLiveData<SummaryModel>()
     val dates = MutableLiveData<MutableList<Date>>(mutableListOf())
     val selectedDay = MutableLiveData<Date>(null)
+    val naryads = MutableLiveData<List<NaryadStatisitcResponseModel>>(listOf())
 
     fun setSummary(_summary: SummaryModel){
         summary.value=_summary
@@ -57,11 +59,17 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
         )
     }
 
-    fun getNaryads(){
+    private val _skip = MutableLiveData<Int>(0)
+    fun getNaryads(reset:Boolean = false){
+        if(reset) _skip.value = 0
         viewModelScope.launch {
             val _summary = summary.value!!
-            val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), null, 0, 100)
-
+            val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), null, _skip.value, 100)
+            val list = mutableListOf<NaryadStatisitcResponseModel>()
+            list.addAll(naryads.value!!)
+            list.addAll(result.naryadList)
+            naryads.postValue(list)
+            _skip.postValue(_skip.value!! + 200)
         }
     }
 }

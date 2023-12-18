@@ -8,10 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TableLayout
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentStatisticsBinding
 import com.example.entshptapplication.fragments.ActionsFragment
+import com.example.entshptapplication.ui.statistics.adapters.NaryadItemAdapter
+import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
 import com.google.android.material.tabs.TabLayout
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.GenericItemAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
+import com.mikepenz.fastadapter.listeners.ClickEventHook
+import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -21,6 +31,7 @@ class StatisticsFragment : Fragment() {
     private lateinit var binding: FragmentStatisticsBinding
     private lateinit var creatorViewModel: StatisticsCreatorViewModel
     private lateinit var statisticsViewModel: StatisticsViewModel
+    private lateinit var naryadItemAdapter:ItemAdapter<NaryadItemAdapter>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -41,7 +52,13 @@ class StatisticsFragment : Fragment() {
         statisticsViewModel = StatisticsViewModelFactory.Create(this)
         statisticsViewModel.setSummary(summary!!)
         setSummaryValuesInTextView()
+
+        statisticsViewModel.naryads.observe(viewLifecycleOwner,{
+            naryadItemAdapter.clear()
+            naryadItemAdapter.add(it.map (::NaryadItemAdapter))
+        })
         loadNaryads()
+
     }
 
     private fun setSummaryValuesInTextView() = with(binding){
@@ -83,6 +100,58 @@ class StatisticsFragment : Fragment() {
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
+        binding.statisticsNaryadsRc.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
+        val footerAdapter = GenericItemAdapter()
+        naryadItemAdapter = ItemAdapter<NaryadItemAdapter>()
+        val naryadFastItemAdapter = FastAdapter.with(listOf( naryadItemAdapter, footerAdapter))
+        binding.statisticsNaryadsRc.adapter = naryadFastItemAdapter
+        val naryads = mutableListOf<NaryadStatisitcResponseModel>()
+        FastAdapterDiffUtil[naryadItemAdapter] = naryads.map(::NaryadItemAdapter)
+        naryadFastItemAdapter.addEventHook(object : ClickEventHook<NaryadItemAdapter>(){
+            override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
+                Log.d("viewholder",viewHolder.toString())
+
+                return super.onBind(viewHolder)
+            }
+            override fun onClick(
+                v: View,
+                position: Int,
+                fastAdapter: FastAdapter<NaryadItemAdapter>,
+                item: NaryadItemAdapter
+            ) {
+                Log.d("click", view.toString())
+            }
+
+        })
+        binding.statisticsNaryadsRc.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter){
+            override fun onLoadMore(currentPage: Int) {
+                Log.d("load more", "load")
+                footerAdapter.clear()
+                statisticsViewModel.getNaryads()
+                //naryadItemAdapter.add(listOf( NaryadStatisitcResponseModel(0,0,"", Date(), 5,"", (1).toDouble())).map(::NaryadItemAdapter))
+            }
+/*
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+
+                    val visibleItemCount = layoutManager.childCount;
+                    val totalItemCount = layoutManager.itemCount;
+                    val pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            // Do pagination.. i.e. fetch new data
+                            loading = true;
+                        }
+                    }
+                }
+            }
+            */
         })
     }
 

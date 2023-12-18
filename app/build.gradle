@@ -71,4 +71,10 @@ dependencies {
 
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    def latestFastAdapterRelease = "5.7.0"
+    implementation "com.mikepenz:fastadapter:${latestFastAdapterRelease}"
+    implementation "com.mikepenz:fastadapter-extensions-binding:${latestFastAdapterRelease}"
+    implementation "com.mikepenz:fastadapter-extensions-diff:${latestFastAdapterRelease}"
+    implementation "com.mikepenz:fastadapter-extensions-scroll:${latestFastAdapterRelease}"
 }

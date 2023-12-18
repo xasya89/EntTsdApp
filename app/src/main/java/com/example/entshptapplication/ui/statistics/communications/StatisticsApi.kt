@@ -21,7 +21,7 @@ interface StatisticsApi {
     suspend fun getStatistic(@Query("uuid") uuid: String):Response<SummaryModel?>
 
     @GET("api/new-statistics/naryads")
-    suspend fun getNaryads(@Query("workerId") workerId: Int, @Query("startDate") startDate: Date, @Query("date") date: Date?, @Query("skip") skip:Int?, @Query("take") take: Int?): Response<ResultStatisticsResponseModel>
+    suspend fun getNaryads(@Query("workerId") workerId: Int, @Query("startDate") startDate: Date, @Query("date") date: Date?, @Query("skip") skip:Int?, @Query("take") take: Int?): ResultStatisticsResponseModel
 
     companion object {
         var api: StatisticsApi? = null
