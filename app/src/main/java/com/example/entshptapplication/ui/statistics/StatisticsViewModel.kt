@@ -10,14 +10,17 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
 import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
     val summary = MutableLiveData<SummaryModel>()
     val dates = MutableLiveData<MutableList<Date>>(mutableListOf())
-    val selectedDay = MutableLiveData<Date>(null)
+    val selectedDay = MutableLiveData<Date?>(null)
     val naryads = MutableLiveData<List<NaryadStatisitcResponseModel>>(listOf())
+    val naryadCount = MutableLiveData<Int>(-1)
+    val selectStep = MutableLiveData<Int>(7)
 
     fun setSummary(_summary: SummaryModel){
         summary.value=_summary
@@ -38,9 +41,15 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
         dates.value = dayList
     }
 
+    fun setSelectDay(day: Date?){
+        selectedDay.value = day
+        getNaryads(true)
+    }
+
     fun getSummaryOnDay(): SummaryModel{
         val _summary = summary.value!!
-        if(selectedDay.value==null) return _summary
+        if(selectedDay.value==null)
+            return _summary
 
         val paymentsSum = _summary.paymentDays.find { it.day==selectedDay.value!! }?.sum ?: 0.0
         val upakSum = _summary.upakDays.find { it.day==selectedDay.value!! }?.compliteSum ?: 0.0
@@ -60,16 +69,35 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
     }
 
     private val _skip = MutableLiveData<Int>(0)
+    fun setSelectStep(_step: Int){
+        selectStep.value = _step
+        naryads.value = listOf()
+        naryadCount.value = -1
+        getNaryads(true)
+    }
     fun getNaryads(reset:Boolean = false){
-        if(reset) _skip.value = 0
+        if(reset){
+            naryads.value = listOf()
+            naryadCount.value = -1
+            _skip.value = 0
+        }
         viewModelScope.launch {
             val _summary = summary.value!!
-            val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), null, _skip.value, 100)
+            val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), selectStep.value!!, selectedDay.value, _skip.value, 100)
             val list = mutableListOf<NaryadStatisitcResponseModel>()
             list.addAll(naryads.value!!)
             list.addAll(result.naryadList)
+            naryadCount.postValue(result.count)
             naryads.postValue(list)
             _skip.postValue(_skip.value!! + 200)
+        }
+    }
+    fun cancelNaryadComplite(naryadCompliteId: Int, onSuccess: ()->Unit){
+        viewModelScope.launch (Dispatchers.IO){
+            statisticsApi.deleteNaryadComplite(summary.value!!.workerId, naryadCompliteId)
+            viewModelScope.launch (Dispatchers.Main){
+                onSuccess.invoke()
+            }
         }
     }
 }

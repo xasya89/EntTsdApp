@@ -46,7 +46,7 @@ class StatisticsChooseDateFragment : Fragment() {
     }
 
     private fun setSelectedDayOrCancel(date: Date?){
-        statisticsViewModel.selectedDay.value = date
+        statisticsViewModel.setSelectDay(date)
         parentFragmentManager.commit {
             replace(R.id.fragmentContainerView, StatisticsFragment.newInstance())
             setReorderingAllowed(true)

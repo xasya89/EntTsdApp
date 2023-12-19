@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentStatisticsBinding
+import com.example.entshptapplication.dialogs.GenericConfirmDialog
 import com.example.entshptapplication.fragments.ActionsFragment
 import com.example.entshptapplication.ui.statistics.adapters.NaryadItemAdapter
+import com.example.entshptapplication.ui.statistics.adapters.NaryadRecycleViewAdapter
 import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
 import com.google.android.material.tabs.TabLayout
 import com.mikepenz.fastadapter.FastAdapter
@@ -32,6 +34,7 @@ class StatisticsFragment : Fragment() {
     private lateinit var creatorViewModel: StatisticsCreatorViewModel
     private lateinit var statisticsViewModel: StatisticsViewModel
     private lateinit var naryadItemAdapter:ItemAdapter<NaryadItemAdapter>
+    private lateinit var naryadRecycleViewAdapter: NaryadRecycleViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -54,10 +57,12 @@ class StatisticsFragment : Fragment() {
         setSummaryValuesInTextView()
 
         statisticsViewModel.naryads.observe(viewLifecycleOwner,{
-            naryadItemAdapter.clear()
-            naryadItemAdapter.add(it.map (::NaryadItemAdapter))
+            naryadRecycleViewAdapter.setNaryads(it)
+            _isMoreLoading = false
+            //naryadItemAdapter.clear()
+            //naryadItemAdapter.add(it.map (::NaryadItemAdapter))
         })
-        loadNaryads()
+        statisticsViewModel.getNaryads(true)
 
     }
 
@@ -72,11 +77,6 @@ class StatisticsFragment : Fragment() {
         statisticsSelectedDateTv.text =
             (if(statisticsViewModel.selectedDay.value==null) "от " else "") +
             dateFormat.format( statisticsViewModel.selectedDay.value ?: statisticsViewModel.dates.value!!.min())
-    }
-
-    private fun  loadNaryads(){
-        statisticsViewModel.getNaryads()
-
     }
 
     private fun initBinding() = with(binding) {
@@ -96,12 +96,51 @@ class StatisticsFragment : Fragment() {
 
         statisticsTabView.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.d("Select tab", tab?.text.toString())
+                when(tab?.text.toString()){
+                    "Упаковка" -> statisticsViewModel.setSelectStep(7)
+                    "Погрузка" -> statisticsViewModel.setSelectStep(8)
+                    else -> statisticsViewModel.setSelectStep(7)
+                }
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
+        initNaryadsRecycleView()
+    }
+
+    private var _isMoreLoading: Boolean = false
+    private fun initNaryadsRecycleView(){
+        val layoutManager = LinearLayoutManager(context)
+        binding.statisticsNaryadsRc.layoutManager = layoutManager
+        naryadRecycleViewAdapter =  NaryadRecycleViewAdapter {
+            GenericConfirmDialog(
+                requireContext(),
+                layoutInflater,
+                "Удалить наряд " + it.shet + "/" + it.numInOrder,
+                {
+                    statisticsViewModel.cancelNaryadComplite(it.naryadCompliteId, {
+                        naryadRecycleViewAdapter.delete(it.naryadCompliteId)
+                    })
+                }).show()
+        }
+        binding.statisticsNaryadsRc.adapter = naryadRecycleViewAdapter
+
+        binding.statisticsNaryadsRc.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy <= 0) return
+                val totalCount = layoutManager.itemCount
+                val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                if (!_isMoreLoading && totalCount <= lastVisibleItem + 5) {
+                    statisticsViewModel.getNaryads()
+                    _isMoreLoading = true
+                }
+            }
+        })
+    }
+
+    private fun initBindingFastAdapter(){
         binding.statisticsNaryadsRc.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         val footerAdapter = GenericItemAdapter()
@@ -133,25 +172,25 @@ class StatisticsFragment : Fragment() {
                 statisticsViewModel.getNaryads()
                 //naryadItemAdapter.add(listOf( NaryadStatisitcResponseModel(0,0,"", Date(), 5,"", (1).toDouble())).map(::NaryadItemAdapter))
             }
-/*
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
+            /*
+                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            if (dy > 0) {
 
-                    val visibleItemCount = layoutManager.childCount;
-                    val totalItemCount = layoutManager.itemCount;
-                    val pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            loading = false;
-                            Log.v("...", "Last Item Wow !");
-                            // Do pagination.. i.e. fetch new data
-                            loading = true;
+                                val visibleItemCount = layoutManager.childCount;
+                                val totalItemCount = layoutManager.itemCount;
+                                val pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+                                if (loading) {
+                                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                        loading = false;
+                                        Log.v("...", "Last Item Wow !");
+                                        // Do pagination.. i.e. fetch new data
+                                        loading = true;
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            */
+                        */
         })
     }
 
