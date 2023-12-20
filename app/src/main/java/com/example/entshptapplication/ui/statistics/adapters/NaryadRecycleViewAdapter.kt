@@ -31,7 +31,16 @@ class NaryadRecycleViewAdapter(val onClick: (naryad: NaryadStatisitcResponseMode
         private val binding = StatisticsNaryadItemBinding.bind(item)
         fun bind(naryad: NaryadStatisitcResponseModel) = with(binding){
             val dateFormat = SimpleDateFormat("dd.MM.yy")
-            statisticsNaryadTitle.text = naryad.naryadNum + " от " + dateFormat.format(naryad.shetDate)
+            statisticsNaryadTitle.text = naryad.shet + "/" + naryad.numInOrder + " от " + dateFormat.format(naryad.shetDate)
+            statisticsNaryadNaryadNum.text = naryad.naryadNum
+            statisticsNaryadCost.text = naryad.cost.toString()
+            var doorNote = naryad.doorName + "  ( " + naryad.h + "x"+naryad.w+
+                    (if(naryad.s!=null)
+                        " x " + naryad.s
+                    else
+                        if(naryad.sEqual)  " x равн"  else ""
+                    ) + " )"
+            statisticsNaryadDoorNote.text = doorNote
         }
         init {
             binding.statisticsNaryadBtnDelete.setOnClickListener {

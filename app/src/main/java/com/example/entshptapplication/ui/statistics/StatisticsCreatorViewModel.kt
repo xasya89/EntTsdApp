@@ -10,7 +10,7 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
 import com.example.entshptapplication.ui.statistics.models.CreateModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 
@@ -19,7 +19,7 @@ class StatisticsCreatorViewModel(val statisticsApi: StatisticsApi): ViewModel() 
     private val uuidJob = MutableLiveData<String>("")
     fun addJob(workerId: Int){
         summary.value = null
-        viewModelScope.launch (Dispatchers.IO){
+        viewModelScope.launch (getCoroutineExceptionHandler() ){
             val uuid = statisticsApi.addJob(CreateModel(workerId)).uuid
             uuidJob.postValue(uuid)
         }
@@ -30,7 +30,7 @@ class StatisticsCreatorViewModel(val statisticsApi: StatisticsApi): ViewModel() 
     fun getResult(){
         val uuid = uuidJob.value
         if(uuid==null || uuid=="") return
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch (getCoroutineExceptionHandler()) {
             val response = statisticsApi.getStatistic(uuid)
             if(response.code()==HttpURLConnection.HTTP_OK && response.body()!=null){
                 Log.d("Response", "Success")
@@ -39,6 +39,10 @@ class StatisticsCreatorViewModel(val statisticsApi: StatisticsApi): ViewModel() 
                 Log.d("Response", response.body().toString())
             //summary.postValue(result)
         }
+    }
+
+    private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { context, throwable -> }
     }
 }
 

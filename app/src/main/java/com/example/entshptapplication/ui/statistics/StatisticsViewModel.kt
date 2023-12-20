@@ -10,6 +10,7 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
 import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -81,7 +82,7 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
             naryadCount.value = -1
             _skip.value = 0
         }
-        viewModelScope.launch {
+        viewModelScope.launch(getCoroutineExceptionHandler()) {
             val _summary = summary.value!!
             val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), selectStep.value!!, selectedDay.value, _skip.value, 100)
             val list = mutableListOf<NaryadStatisitcResponseModel>()
@@ -89,16 +90,20 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
             list.addAll(result.naryadList)
             naryadCount.postValue(result.count)
             naryads.postValue(list)
-            _skip.postValue(_skip.value!! + 200)
+            _skip.postValue(_skip.value!! + 100)
         }
     }
     fun cancelNaryadComplite(naryadCompliteId: Int, onSuccess: ()->Unit){
-        viewModelScope.launch (Dispatchers.IO){
+        viewModelScope.launch (getCoroutineExceptionHandler()){
             statisticsApi.deleteNaryadComplite(summary.value!!.workerId, naryadCompliteId)
             viewModelScope.launch (Dispatchers.Main){
                 onSuccess.invoke()
             }
         }
+    }
+
+    private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
+        return CoroutineExceptionHandler { context, throwable -> }
     }
 }
 

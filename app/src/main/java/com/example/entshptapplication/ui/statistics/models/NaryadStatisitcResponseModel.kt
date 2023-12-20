@@ -9,5 +9,10 @@ data class NaryadStatisitcResponseModel(
     val shetDate: Date,
     val numInOrder: Int,
     val naryadNum: String,
-    val cost: Double
+    val cost: Double,
+    val doorName: String,
+    val h: Int,
+    val w: Int,
+    val s: Int?,
+    val sEqual: Boolean
 )
