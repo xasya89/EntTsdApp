@@ -5,19 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentNaryadInfoBinding
-import com.example.entshptapplication.fragments.ActionsFragment
+import com.example.entshptapplication.ui.actions.ActionsFragment
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
-import com.example.entshptapplication.viewmodels.KeyListenerViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class NaryadInfoFragment : Fragment() {
     private lateinit var binding: FragmentNaryadInfoBinding
-    private lateinit var viewModel: NaryadInfoViewModel
-    private lateinit var keyListenerViewModel: KeyListenerViewModel
+    private val viewModel by activityViewModels<NaryadInfoViewModel>()
+    private val keyListenerViewModel by activityViewModels<KeyListenerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +46,6 @@ class NaryadInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = NaryadInfoViewModelFactory.Create(this)
         viewModel.clear()
         viewModel.findNaryad.observe(viewLifecycleOwner, {
             if(it!=null)
@@ -54,7 +55,6 @@ class NaryadInfoFragment : Fragment() {
                 }
         })
 
-        keyListenerViewModel = ViewModelProvider(activity?.viewModelStore!!, KeyListenerViewModelFactory()).get(KeyListenerViewModel::class.java)
         keyListenerViewModel.barCode.value = ""
         keyListenerViewModel.barCode.observe(viewLifecycleOwner, {
             if(it!=null && it!="")

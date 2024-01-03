@@ -12,5 +12,19 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <!--<item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>-->
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModelBottomSheetStyle</item>
+    </style>
+
+    <style name="AppModelBottomSheetStyle" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottomsheet_shape</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
     </style>
 </resources>

@@ -1,21 +1,22 @@
 package com.example.entshptapplication.ui.statistics
 
-import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.entshptapplication.models.HOSTED_NAME
-import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
+import com.example.entshptapplication.communications.StatisticsApi
 import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
+import javax.inject.Inject
 
-class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
+@HiltViewModel
+class StatisticsViewModel @Inject constructor(
+    val  statisticsApi: StatisticsApi
+): ViewModel() {
     val summary = MutableLiveData<SummaryModel>()
     val dates = MutableLiveData<MutableList<Date>>(mutableListOf())
     val selectedDay = MutableLiveData<Date?>(null)
@@ -104,19 +105,5 @@ class StatisticsViewModel(val  statisticsApi: StatisticsApi): ViewModel() {
 
     private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
         return CoroutineExceptionHandler { context, throwable -> }
-    }
-}
-
-class StatisticsViewModelFactory constructor(private val api: StatisticsApi): ViewModelProvider.Factory{
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return StatisticsViewModel(this.api) as T
-    }
-
-    companion object{
-        fun Create(fragment: Fragment): StatisticsViewModel {
-            val api = StatisticsApi.getInstance(HOSTED_NAME)
-            return ViewModelProvider(fragment.requireActivity().viewModelStore, StatisticsViewModelFactory(api)).get(
-                StatisticsViewModel::class.java)
-        }
     }
 }

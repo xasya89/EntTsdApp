@@ -18,8 +18,4 @@ class LoginDbRepository(private val loginDao: LoginDao) {
         loginDao.Insert(login)
     }
 
-    suspend fun Logout(){
-        loginDao.SetLogout()
-    }
-
 }

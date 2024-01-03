@@ -13,19 +13,8 @@ import retrofit2.http.Query
 
 interface FindNaryadsApi {
     @GET("api/findNaryad")
-    fun Find(@Query("find") findStr:String): Call<List<FindNaryadModel>>
+    suspend fun Find(@Query("find") findStr:String): List<FindNaryadModel>
 
     @GET("api/findNaryad/{naryadId}")
-    fun GetNaryad(@Path("naryadId") naryadId: Int): Call<FindNaryadModel>
-
-    companion object {
-        var findNaryadApi: FindNaryadsApi? = null
-
-        fun getInstance(hostedName: String): FindNaryadsApi {
-            if(findNaryadApi == null){
-                findNaryadApi = RetrofitCreator.getRetrofit(hostedName).create(FindNaryadsApi::class.java)
-            }
-            return findNaryadApi!!
-        }
-    }
+    suspend fun GetNaryad(@Path("naryadId") naryadId: Int): FindNaryadModel
 }

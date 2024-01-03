@@ -6,14 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableLayout
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentStatisticsBinding
 import com.example.entshptapplication.dialogs.GenericConfirmDialog
-import com.example.entshptapplication.fragments.ActionsFragment
+import com.example.entshptapplication.ui.actions.ActionsFragment
 import com.example.entshptapplication.ui.statistics.adapters.NaryadItemAdapter
 import com.example.entshptapplication.ui.statistics.adapters.NaryadRecycleViewAdapter
 import com.example.entshptapplication.ui.statistics.models.NaryadStatisitcResponseModel
@@ -24,15 +24,15 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
-import java.text.DateFormat
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
-import java.util.Date
 
+@AndroidEntryPoint
 class StatisticsFragment : Fragment() {
 
     private lateinit var binding: FragmentStatisticsBinding
-    private lateinit var creatorViewModel: StatisticsCreatorViewModel
-    private lateinit var statisticsViewModel: StatisticsViewModel
+    private val creatorViewModel by activityViewModels<StatisticsCreatorViewModel>()
+    private val statisticsViewModel by activityViewModels<StatisticsViewModel>()
     private lateinit var naryadItemAdapter:ItemAdapter<NaryadItemAdapter>
     private lateinit var naryadRecycleViewAdapter: NaryadRecycleViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,17 +50,13 @@ class StatisticsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        creatorViewModel = StatisticsCreatorViewModelFactory.Create(this)
         val summary = creatorViewModel.summary.value
-        statisticsViewModel = StatisticsViewModelFactory.Create(this)
         statisticsViewModel.setSummary(summary!!)
         setSummaryValuesInTextView()
 
         statisticsViewModel.naryads.observe(viewLifecycleOwner,{
             naryadRecycleViewAdapter.setNaryads(it)
             _isMoreLoading = false
-            //naryadItemAdapter.clear()
-            //naryadItemAdapter.add(it.map (::NaryadItemAdapter))
         })
         statisticsViewModel.getNaryads(true)
 

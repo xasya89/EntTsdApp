@@ -1,20 +1,22 @@
 package com.example.entshptapplication.ui.statistics
 
 import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.entshptapplication.models.HOSTED_NAME
-import com.example.entshptapplication.ui.statistics.communications.StatisticsApi
+import com.example.entshptapplication.communications.StatisticsApi
 import com.example.entshptapplication.ui.statistics.models.CreateModel
 import com.example.entshptapplication.ui.statistics.models.SummaryModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
+import javax.inject.Inject
 
-class StatisticsCreatorViewModel(val statisticsApi: StatisticsApi): ViewModel() {
+@HiltViewModel
+class StatisticsCreatorViewModel @Inject constructor(
+    val statisticsApi: StatisticsApi
+): ViewModel() {
     val summary = MutableLiveData<SummaryModel?>(null)
     private val uuidJob = MutableLiveData<String>("")
     fun addJob(workerId: Int){
@@ -43,19 +45,5 @@ class StatisticsCreatorViewModel(val statisticsApi: StatisticsApi): ViewModel() 
 
     private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
         return CoroutineExceptionHandler { context, throwable -> }
-    }
-}
-
-class StatisticsCreatorViewModelFactory constructor(private val api: StatisticsApi): ViewModelProvider.Factory{
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return StatisticsCreatorViewModel(this.api) as T
-    }
-
-    companion object{
-        fun Create(fragment: Fragment): StatisticsCreatorViewModel {
-            val api = StatisticsApi.getInstance(HOSTED_NAME)
-            return ViewModelProvider(fragment.requireActivity().viewModelStore, StatisticsCreatorViewModelFactory(api)).get(
-                StatisticsCreatorViewModel::class.java)
-        }
     }
 }

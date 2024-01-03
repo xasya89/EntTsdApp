@@ -8,10 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.entshptapplication.ui.naryadInfo.Models.NaryadInfoModel
 import com.example.entshptapplication.ui.naryadInfo.api.NaryadInfoApi
 import com.example.entshptapplication.models.HOSTED_NAME
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NaryadInfoViewModel constructor(private val findApi: NaryadInfoApi): ViewModel() {
+@HiltViewModel
+class NaryadInfoViewModel @Inject constructor(
+    private val findApi: NaryadInfoApi
+): ViewModel() {
     val findNaryad = MutableLiveData<NaryadInfoModel?>(null)
 
     fun clear(){
@@ -35,20 +40,6 @@ class NaryadInfoViewModel constructor(private val findApi: NaryadInfoApi): ViewM
     private fun getCoroutineExceptionHandler(): CoroutineExceptionHandler {
         return CoroutineExceptionHandler { context, throwable ->
             //error.postValue(throwable.message.toString())
-        }
-    }
-}
-
-class NaryadInfoViewModelFactory constructor(private val findApi: NaryadInfoApi): ViewModelProvider.Factory{
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return NaryadInfoViewModel(this.findApi) as T
-    }
-
-    companion object{
-        fun Create(fragment: Fragment): NaryadInfoViewModel {
-            val findApi = NaryadInfoApi.getInstance(HOSTED_NAME)
-            return ViewModelProvider(fragment.requireActivity().viewModelStore, NaryadInfoViewModelFactory(findApi)).get(
-                NaryadInfoViewModel::class.java)
         }
     }
 }

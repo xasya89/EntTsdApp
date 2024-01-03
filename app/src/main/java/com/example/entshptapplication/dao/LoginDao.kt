@@ -20,5 +20,5 @@ interface LoginDao {
     suspend fun Insert(loginDb: LoginDb)
 
     @Query("UPDATE Logins SET isLogout=1")
-    suspend fun SetLogout()
+    suspend fun Logout()
 }

@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentNaryadInfoVeiwerBinding
-import com.example.entshptapplication.fragments.ActionsFragment
+import com.example.entshptapplication.ui.actions.ActionsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NaryadInfoVeiwerFragment : Fragment() {
-    private lateinit var naryadInfoViewModel: NaryadInfoViewModel
+    private val naryadInfoViewModel by activityViewModels<NaryadInfoViewModel>()
     private lateinit var binding: FragmentNaryadInfoVeiwerBinding
 
     override fun onCreateView(
@@ -30,7 +34,6 @@ class NaryadInfoVeiwerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        naryadInfoViewModel = NaryadInfoViewModelFactory.Create(this)
         naryadInfoViewModel.findNaryad.observe(viewLifecycleOwner, {
             val naryadInfo = it!!
             binding.infoShetAndDate.text = "Дверь: " + naryadInfo.shet + "/" + naryadInfo.numInOrder

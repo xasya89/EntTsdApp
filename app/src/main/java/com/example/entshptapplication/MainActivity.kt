@@ -7,14 +7,16 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
-import com.example.entshptapplication.viewmodels.KeyListenerViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var keyListenerViewModel: KeyListenerViewModel
+    private val keyListenerViewModel by viewModels<KeyListenerViewModel>()
+
     private var barCode: String = ""
     fun clearBarCode(){
         barCode = ""
@@ -24,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        keyListenerViewModel = ViewModelProvider(this, KeyListenerViewModelFactory()).get(KeyListenerViewModel::class.java)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
@@ -50,9 +51,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.dispatchKeyEvent(event)
-    }
-
-    override fun onBackPressed() {
-        //super.onBackPressed()
     }
 }

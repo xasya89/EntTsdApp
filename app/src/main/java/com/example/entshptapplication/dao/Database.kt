@@ -9,6 +9,7 @@ import com.example.entshptapplication.databaseModels.LoginDb
 import com.example.entshptapplication.databaseModels.ShptDoorDb
 import com.example.entshptapplication.databaseModels.UpakNaryadDb
 import com.example.entshptapplication.models.ConnectionSetting
+import com.example.entshptapplication.ui.shpt.ShptDao
 
 
 @androidx.room.Database(entities = arrayOf(ConnectionSetting::class, UpakNaryadDb::class, ShptDoorDb::class, LoginDb::class), version = 4, exportSchema = false)

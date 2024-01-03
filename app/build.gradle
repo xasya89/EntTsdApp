@@ -3,11 +3,12 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id "org.jetbrains.kotlin.kapt"
+    id "com.google.dagger.hilt.android"
 }
 
 android {
     namespace 'com.example.entshptapplication'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.entshptapplication"
@@ -77,4 +78,13 @@ dependencies {
     implementation "com.mikepenz:fastadapter-extensions-binding:${latestFastAdapterRelease}"
     implementation "com.mikepenz:fastadapter-extensions-diff:${latestFastAdapterRelease}"
     implementation "com.mikepenz:fastadapter-extensions-scroll:${latestFastAdapterRelease}"
+
+    implementation "com.google.dagger:hilt-android:2.46.1"
+    kapt "com.google.dagger:hilt-compiler:2.46.1"
+
+    implementation "com.google.android.material:material:1.11.0"
+}
+
+kapt {
+    correctErrorTypes = true
 }

@@ -46,7 +46,7 @@ class RetrofitCreator {
             val gsonConverter = GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create()
-            val retrofit = Retrofit.Builder().baseUrl("http://192.168.1.200:5226/")
+            val retrofit = Retrofit.Builder().baseUrl("http://192.168.0.253:5226/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gsonConverter))
                 .addConverterFactory(QueryConverterFactory.create())

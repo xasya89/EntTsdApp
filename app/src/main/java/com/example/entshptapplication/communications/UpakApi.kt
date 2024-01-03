@@ -19,15 +19,4 @@ interface UpakApi {
 
     @POST("api/upaklist/save")
     suspend fun Save(@Body model: RequestUpakModel): ResponseBody
-
-    companion object {
-        var upakApi: UpakApi? = null
-
-        fun getInstance(hostedName: String): UpakApi {
-            if(upakApi == null){
-                upakApi = RetrofitCreator.getRetrofit(hostedName).create(UpakApi::class.java)
-            }
-            return upakApi!!
-        }
-    }
 }
