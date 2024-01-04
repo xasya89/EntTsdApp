@@ -9,7 +9,7 @@ import com.example.entshptapplication.models.Naryad
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class NaryadActionBottomSheetDialog(
-    private val naryad: Naryad,
+    private val title: String,
     private val onInfo: ()->Unit,
     private val onDelete: ()->Unit
 ): BottomSheetDialogFragment() {
@@ -21,15 +21,15 @@ class NaryadActionBottomSheetDialog(
         savedInstanceState: Bundle?
     ): View? {
         binding = NaryadActionsDialogBinding.inflate(inflater)
-        binding.naryadDialogBody.text = "сч. " + naryad.shet + " дв "+naryad.numInOrder
+        binding.naryadDialogBody.text = title
         binding.naryadDialogClose.setOnClickListener { dismiss() }
         binding.naryadDialogInfo.setOnClickListener {
-            onInfo.invoke()
             dismiss()
+            onInfo.invoke()
         }
         binding.naryadDialogRemove.setOnClickListener {
-            onDelete.invoke()
             dismiss()
+            onDelete.invoke()
         }
         return binding.root
     }

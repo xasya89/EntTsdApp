@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.entshptapplication.MainActivity
 import com.example.entshptapplication.R
 import com.example.entshptapplication.databinding.FragmentShptOneBinding
+import com.example.entshptapplication.dialogs.NaryadActionBottomSheetDialog
 import com.example.entshptapplication.fragments.CustomDialogs
 import com.example.entshptapplication.ui.findNaryads.FIND_NARYAD_PARENT_SHPT
 import com.example.entshptapplication.ui.findNaryads.FindNaryadsFragment
@@ -55,7 +56,9 @@ class ShptOneFragment : Fragment() {
 
         binding.shptOneRecycleView.adapter = adapter
         binding.shptOneRecycleView.layoutManager = LinearLayoutManager(context)
-        adapter.onActionClick = {actDoor -> openActionsDialog(actDoor)}
+        adapter.onActionClick = {actDoor ->
+            openActionsDialog(actDoor)
+        }
         binding.shptOneCloseBtn.setOnClickListener { close() }
         binding.shptOneSearchTextView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
@@ -142,28 +145,12 @@ class ShptOneFragment : Fragment() {
     }
 
     fun openActionsDialog(actDoor: ActShptDoor){
-        val dialog = context?.let { Dialog(it) }
-        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog?.setCancelable(false)
-        dialog?.setContentView(R.layout.shpt_action_dialog)
-        val width = (resources.displayMetrics.widthPixels*0.97).toInt()
-        val height = 900
-        dialog?.window?.setLayout(width, height)
-        val naryadNumTV = dialog?.findViewById<TextView>(R.id.shptActionsDialogNaryadNum)
-        val btnInfo = dialog?.findViewById<Button>(R.id.shptActionsDialogInfo)
-        val btnClose = dialog?.findViewById<Button>(R.id.shptActionsDialogClose)
-        val btnDelete = dialog?.findViewById<Button>(R.id.shptActionsDialogDelete)
-        naryadNumTV?.text = actDoor.num
-        btnDelete?.setOnClickListener {
-            shptOneViewModel.delete(idAct!!, actDoor, loginViewModel.worker.value?.id!!)
-            dialog.dismiss()
-        }
-        btnClose?.setOnClickListener { dialog.dismiss() }
-        btnInfo?.setOnClickListener {
-            dialog.dismiss()
-            findNaryadsViewModel.get(actDoor.idNaryad)
-        }
-        dialog?.show()
+        val dialog = NaryadActionBottomSheetDialog(
+            actDoor.num,
+            { shptOneViewModel.delete(idAct!!, actDoor, loginViewModel.worker.value?.id!!) },
+            { findNaryadsViewModel.get(actDoor.idNaryad) }
+        )
+        dialog.show(parentFragmentManager, NaryadActionBottomSheetDialog.TAG)
     }
 
     fun close(){

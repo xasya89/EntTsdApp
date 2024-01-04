@@ -103,11 +103,15 @@ class UpakListFragment : Fragment() {
 
 
     private fun showDialog( naryad: Naryad) {
-        val bootomDialog = NaryadActionBottomSheetDialog(naryad,{
-            upakViewModel.findNaryadGet(naryad.id, {
-                CustomDialogs.showInfoDialog(context, it)
-            })
-        }, { upakViewModel.deleteNaryad(naryad) })
+        val bootomDialog = NaryadActionBottomSheetDialog(
+            "сч " + naryad.shet + " дв " + naryad.numInOrder + "\n" + naryad.num,
+            {
+                upakViewModel.findNaryadGet(naryad.id, {
+                    CustomDialogs.showInfoDialog(context, it)
+                })
+            },
+            { upakViewModel.deleteNaryad(naryad) }
+        )
         bootomDialog.show(parentFragmentManager, NaryadActionBottomSheetDialog.TAG)
     }
 
