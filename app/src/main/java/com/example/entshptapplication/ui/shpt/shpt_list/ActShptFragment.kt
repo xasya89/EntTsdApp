@@ -39,6 +39,8 @@ class ActShptFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shptViewModel.getActList().observe(viewLifecycleOwner, Observer {
+            binding.actShptLoadingAnimation.visibility = View.GONE
+            binding.actListRecycleView.visibility = View.VISIBLE
             adapter.setList(it)
         })
     }

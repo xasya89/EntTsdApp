@@ -7,7 +7,7 @@ import retrofit2.http.*
 
 
 interface ShptApi {
-    @GET("api/actshpt")
+    @GET("api/v2/actshpt")
     suspend fun GetActList():List<ActShpt>
 
     @GET("api/actshpt/{idAct}")

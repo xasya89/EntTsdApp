@@ -1,8 +1,12 @@
 package com.example.entshptapplication.models
 
+import java.util.Date
+
 data class ActShpt(
     val idAct: Int,
     val actNum: Int,
+    val actDate: Date,
+    val shptDate: Date?,
     val actDateStr: String?,
     val shptDateStr: String?,
     val shet: String?,

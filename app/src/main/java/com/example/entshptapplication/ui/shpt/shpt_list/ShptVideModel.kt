@@ -6,6 +6,7 @@ import androidx.lifecycle.liveData
 import com.example.entshptapplication.communications.ShptApi
 import com.example.entshptapplication.models.ActShpt
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -22,6 +23,5 @@ class ShptViewModel @Inject constructor(
             Log.e("Shpt get list", e.message.toString())
         }
     }
-
 }
 
