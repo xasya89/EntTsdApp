@@ -16,6 +16,7 @@ import com.example.entshptapplication.ui.login.LoginFragment
 import com.example.entshptapplication.ui.statistics.StatisticsLoaderFragment
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
 import com.example.entshptapplication.ui.login.LoginViewModel
+import com.example.entshptapplication.ui.video.VideoFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,6 +42,9 @@ class ActionsFragment : Fragment() {
 
         binding.findActionBtn.setOnClickListener {
             transitionToFragment((NaryadInfoFragment.newInstance()))
+        }
+        binding.videoActionBtn.setOnClickListener {
+            transitionToFragment((VideoFragment.newInstance()))
         }
         binding.exitActionBtn.setOnClickListener {
             loginViewModel.logOut()

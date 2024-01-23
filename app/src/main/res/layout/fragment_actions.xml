@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.actions.ActionsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/workerFIOTextView"
         android:layout_width="wrap_content"
@@ -17,62 +17,68 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/actListActionBtn"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:id="@+id/tableLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:width="@dimen/actionBtnWidth"
-        android:height="@dimen/actionBtnHeight"
-        android:text="Погрузка"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workerFIOTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/workerFIOTextView">
 
-    <Button
-        android:id="@+id/upakActionBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:width="@dimen/actionBtnWidth"
-        android:height="@dimen/actionBtnHeight"
-        android:text="Упаковка"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/actListActionBtn" />
+        <TableRow>
 
-    <Button
-        android:id="@+id/statActionBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:width="@dimen/actionBtnWidth"
-        android:height="@dimen/actionBtnHeight"
-        android:text="Статистика"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upakActionBtn" />
+            <Button
+                android:id="@+id/actListActionBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:height="100dp"
+                android:text="Погрузка" />
 
-    <Button
-        android:id="@+id/findActionBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:width="@dimen/actionBtnWidth"
-        android:height="@dimen/actionBtnHeight"
-        android:text="Поиск наряда"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statActionBtn" />
+            <Button
+                android:id="@+id/upakActionBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:height="100dp"
+                android:text="Упаковка" />
+        </TableRow>
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/statActionBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="Статистика" />
+
+            <Button
+                android:id="@+id/findActionBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="Поиск наряда" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/videoActionBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="Видео" />
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/exitActionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:width="@dimen/actionBtnWidth"
-        android:height="@dimen/actionBtnHeight"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="24dp"
         android:text="Выход"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

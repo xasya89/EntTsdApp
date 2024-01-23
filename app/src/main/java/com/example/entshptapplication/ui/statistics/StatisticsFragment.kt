@@ -68,11 +68,20 @@ class StatisticsFragment : Fragment() {
         statisticsPaymentsSum.text = summary.paymentsSumAll.toString()
         statisticsUpakSum.text = summary.upakSumAll.toString()
         statisticsShptSum.text = summary.shptSumAll.toString()
+        statisticsAllSum.text = (summary.lastActSum + summary.paymentsSumAll + summary.upakSumAll + summary.shptSumAll).toString()
+        /*
+        statisticsAllSum.text = if(statisticsViewModel.selectedDay?.value ==null)
+            (summary.lastActSum + summary.paymentsSumAll + summary.upakSumAll + summary.shptSumAll).toString()
+        else
+            (summary.upakSumAll + summary.shptSumAll).toString()
+         */
         val dateFormat = SimpleDateFormat("dd.MM.YY")
 
         statisticsSelectedDateTv.text =
-            (if(statisticsViewModel.selectedDay.value==null) "от " else "") +
-            dateFormat.format( statisticsViewModel.selectedDay.value ?: statisticsViewModel.dates.value!!.min())
+            if(statisticsViewModel.selectedDay.value==null)
+                "от " + dateFormat.format(statisticsViewModel.dates.value!!.filter { it!=null }.first())
+            else
+                dateFormat.format(statisticsViewModel.selectedDay.value)
     }
 
     private fun initBinding() = with(binding) {

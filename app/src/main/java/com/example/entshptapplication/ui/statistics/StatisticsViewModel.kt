@@ -1,5 +1,6 @@
 package com.example.entshptapplication.ui.statistics
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,7 @@ class StatisticsViewModel @Inject constructor(
     val  statisticsApi: StatisticsApi
 ): ViewModel() {
     val summary = MutableLiveData<SummaryModel>()
-    val dates = MutableLiveData<MutableList<Date>>(mutableListOf())
+    val dates = MutableLiveData<MutableList<Date?>>(mutableListOf())
     val selectedDay = MutableLiveData<Date?>(null)
     val naryads = MutableLiveData<List<NaryadStatisitcResponseModel>>(listOf())
     val naryadCount = MutableLiveData<Int>(-1)
@@ -40,7 +41,10 @@ class StatisticsViewModel @Inject constructor(
                 dayList.add(pay.day)
         }
         dayList.sort()
-        dates.value = dayList
+
+        val dayListWithNull = mutableListOf<Date?>(null)
+        dayListWithNull.addAll(dayList)
+        dates.value = dayListWithNull
     }
 
     fun setSelectDay(day: Date?){
@@ -85,7 +89,11 @@ class StatisticsViewModel @Inject constructor(
         }
         viewModelScope.launch(getCoroutineExceptionHandler()) {
             val _summary = summary.value!!
-            val result = statisticsApi.getNaryads(_summary.workerId, dates.value!!.min(), selectStep.value!!, selectedDay.value, _skip.value, 100)
+            Log.d("select day", selectedDay.value?.toString() ?: "")
+            val result = if(selectedDay.value==null)
+                statisticsApi.getNaryadsWithoutSelectDate(_summary.workerId, selectStep.value!!, _skip.value, 100)
+            else
+                statisticsApi.getNaryads(_summary.workerId,  selectStep.value!!, selectedDay.value!!, _skip.value, 100)
             val list = mutableListOf<NaryadStatisitcResponseModel>()
             list.addAll(naryads.value!!)
             list.addAll(result.naryadList)
