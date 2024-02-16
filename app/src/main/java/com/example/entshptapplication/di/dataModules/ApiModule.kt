@@ -13,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -21,19 +22,23 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
-    private const val BASE_URL="http://192.168.1.200:5226/"
-    //private const val BASE_URL="http://192.168.0.254:5226/"
+    //private const val BASE_URL="http://192.168.1.200:5226/"
+    private const val BASE_URL="http://172.172.172.45:5226/"
     //private const val BASE_URL="http://192.168.0.253:5226/"
 
     @Singleton
     @Provides
-    fun providesOkHttpClient(): OkHttpClient =
-        OkHttpClient
+    fun providesOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        return OkHttpClient
             .Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
             .build()
+    }
 
     @Singleton
     @Provides

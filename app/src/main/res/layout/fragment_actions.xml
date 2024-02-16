@@ -63,13 +63,15 @@
                 android:text="Поиск наряда" />
         </TableRow>
         <TableRow>
+
             <Button
                 android:id="@+id/videoActionBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:text="Видео" />
+                android:text="Видео"
+                android:visibility="gone" />
         </TableRow>
     </TableLayout>
 

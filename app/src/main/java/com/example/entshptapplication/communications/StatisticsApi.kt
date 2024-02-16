@@ -21,10 +21,7 @@ interface StatisticsApi {
     suspend fun getStatistic(@Query("uuid") uuid: String):Response<SummaryModel?>
 
     @GET("api/new-statistics/naryads")
-    suspend fun getNaryadsWithoutSelectDate(@Query("workerId") workerId: Int, @Query("step") step: Int, @Query("skip") skip:Int?, @Query("take") take: Int?): ResultStatisticsResponseModel
-
-    @GET("api/new-statistics/naryads-date")
-    suspend fun getNaryads(@Query("workerId") workerId: Int, @Query("step") step: Int, @Query("date") date: Date, @Query("skip") skip:Int?, @Query("take") take: Int?): ResultStatisticsResponseModel
+    suspend fun getNaryads(@Query("workerId") workerId: Int, @Query("step") step: Int, @Query("date") date: Date?, @Query("skip") skip:Int?, @Query("take") take: Int?): ResultStatisticsResponseModel
 
     @DELETE("api/new-statistics/naryads")
     suspend fun deleteNaryadComplite(@Query("workerId") workerId:Int, @Query("naryadCompliteId") naryadCompliteId: Int)
