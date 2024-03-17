@@ -34,6 +34,7 @@ import com.example.entshptapplication.ui.actions.ActionsFragment
 import com.example.entshptapplication.ui.findNaryads.FIND_NARYAD_PARENT_UPAK
 import com.example.entshptapplication.ui.findNaryads.FindNaryadsFragment
 import com.example.entshptapplication.ui.login.LoginViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -82,8 +83,7 @@ class UpakListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         upakViewModel.loadFromDb()
         upakViewModel.error.observe(viewLifecycleOwner, Observer {
-            if(it!=null)
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            if(it!=null) openErrorModalDialog(it!!)
         })
         upakViewModel.upakList.observe(viewLifecycleOwner, {
             binding.summaryCount.text = it.size.toString()
@@ -155,6 +155,14 @@ class UpakListFragment : Fragment() {
                 setReorderingAllowed(true)
             }
         }
+    }
+
+    fun openErrorModalDialog(error: String){
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Ошибка сохранения")
+            .setMessage(error)
+            .setPositiveButton("Закрыть", {dialog, wich -> upakViewModel.error.value = null})
+            .show();
     }
 
     companion object {

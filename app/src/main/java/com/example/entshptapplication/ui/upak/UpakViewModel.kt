@@ -1,5 +1,6 @@
 package com.example.entshptapplication.ui.upak
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.entshptapplication.communications.FindNaryadsApi
 import com.example.entshptapplication.communications.UpakApi
@@ -10,6 +11,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import java.util.Date
 import javax.inject.Inject
 
@@ -154,10 +156,19 @@ class UpakViewModel @Inject constructor (
 
     fun save(workerId: Int, onSuccess: (()->Unit)) {
         viewModelScope.launch(getCoroutineExceptionHandler()) {
-            upakApi.Save(RequestUpakModel(naryads = upakList.value!!.map { it.id }, workerId = workerId))
-            upakDbRepository.clear()
-            upakList.postValue(listOf())
-            onSuccess.invoke()
+            val result = upakApi.Save(
+                RequestUpakModel(
+                    naryads = upakList.value!!.map { it.id },
+                    workerId = workerId
+                )
+            )
+            if(result.isSuccessful){
+                upakDbRepository.clear()
+                upakList.postValue(listOf())
+                onSuccess.invoke()
+                return@launch
+            }
+            error.postValue(result.errorBody()?.string() ?: "")
         }
     }
 

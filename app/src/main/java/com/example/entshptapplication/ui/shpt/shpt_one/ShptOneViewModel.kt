@@ -22,6 +22,7 @@ class ShptOneViewModel @Inject constructor (
 ): ViewModel() {
     val naryads = MutableLiveData<List<ActShptDoor>>(listOf())
     val error = MutableLiveData<String?>()
+    val errorSave = MutableLiveData<String?>()
 
     fun getOActOne(idAct: Int) = liveData<ActShpt> {
         try {
@@ -106,15 +107,19 @@ class ShptOneViewModel @Inject constructor (
 
     fun complite(actId: Int, workerId: Int, onSuccess: () -> Unit){
         viewModelScope.launch(Dispatchers.IO + getCoroutineExceptionHandler()) {
-            shptApi.Complite(ShptCompliteListRequestPayload(
+            val response = shptApi.Complite(ShptCompliteListRequestPayload(
                 actId,
                 "",
                 naryads.value!!.filter { it.isInDb }.map { it.idNaryad },
                 workerId
             )
             )
-            shptDbRepository.clear(actId)
-            naryads.postValue(load(actId).doors)
+            if(response.isSuccessful){
+                shptDbRepository.clear(actId)
+                naryads.postValue(load(actId).doors)
+                return@launch
+            }
+            errorSave.postValue(response.errorBody()?.string() ?: "")
         }
     }
 

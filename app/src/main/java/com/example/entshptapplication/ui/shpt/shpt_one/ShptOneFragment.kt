@@ -26,6 +26,7 @@ import com.example.entshptapplication.ui.actions.ActionsFragment
 import com.example.entshptapplication.ui.login.LoginViewModel
 import com.example.entshptapplication.ui.findNaryads.FindNaryadsViewModel
 import com.example.entshptapplication.viewmodels.KeyListenerViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val ARG_PARAM_ID_ACT = "idAct"
@@ -120,6 +121,10 @@ class ShptOneFragment : Fragment() {
             if(it!=null)
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG)
         })
+
+        shptOneViewModel.errorSave.observe(viewLifecycleOwner, {
+            openErrorModalDialog(it!!)
+        })
     }
 
     private fun loadAct(){
@@ -166,6 +171,14 @@ class ShptOneFragment : Fragment() {
 
     fun clearBarCode(){
         (activity as MainActivity).clearBarCode()
+    }
+
+    fun openErrorModalDialog(error: String){
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Ошибка сохранения")
+            .setMessage(error)
+            .setPositiveButton("Закрыть", {dialog, wich ->})
+            .show();
     }
 
     companion object {

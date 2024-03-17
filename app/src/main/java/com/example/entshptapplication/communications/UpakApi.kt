@@ -4,6 +4,7 @@ import com.example.entshptapplication.models.HOSTED_NAME
 import com.example.entshptapplication.models.Naryad
 import com.example.entshptapplication.models.RequestUpakModel
 import com.example.entshptapplication.models.ResponseMessageModel
+import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -18,5 +19,5 @@ interface UpakApi {
     suspend fun Scan(@Query("barcode") barcode: String): Naryad
 
     @POST("api/upaklist/save")
-    suspend fun Save(@Body model: RequestUpakModel): ResponseBody
+    suspend fun Save(@Body model: RequestUpakModel): retrofit2.Response<String>
 }

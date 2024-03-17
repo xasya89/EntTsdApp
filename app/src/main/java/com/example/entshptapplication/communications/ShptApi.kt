@@ -3,6 +3,7 @@ package com.example.entshptapplication.communications
 import com.example.entshptapplication.models.*
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 
@@ -23,7 +24,7 @@ interface ShptApi {
     suspend fun Scan(@Query("workerId") workerId: Int, @Query("barcode") barcode:String): ActShptDoor
 
     @POST("api/actshpt")
-    suspend fun Complite(@Body model: ShptCompliteListRequestPayload): List<ActShptDoor>
+    suspend fun Complite(@Body model: ShptCompliteListRequestPayload): Response<List<ActShptDoor>>
 
     @HTTP(method = "DELETE", path = "api/actshpt", hasBody = true)
     suspend fun Delete(@Body model: ShptCompliteDeleteRequestPayload): ResponseBody
