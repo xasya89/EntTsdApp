@@ -26,6 +26,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.util.Date
 
 @AndroidEntryPoint
 class StatisticsFragment : Fragment() {
@@ -79,7 +80,7 @@ class StatisticsFragment : Fragment() {
 
         statisticsSelectedDateTv.text =
             if(statisticsViewModel.selectedDay.value==null)
-                "от " + dateFormat.format(statisticsViewModel.dates.value!!.filter { it!=null }.first())
+                "от " + dateFormat.format(statisticsViewModel.dates.value!!.filter { it!=null }.firstOrNull() ?: Date())
             else
                 dateFormat.format(statisticsViewModel.selectedDay.value)
     }

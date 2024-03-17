@@ -89,11 +89,7 @@ class StatisticsViewModel @Inject constructor(
         }
         viewModelScope.launch(getCoroutineExceptionHandler()) {
             val _summary = summary.value!!
-            Log.d("select day", selectedDay.value?.toString() ?: "")
-            val result = if(selectedDay.value==null)
-                statisticsApi.getNaryadsWithoutSelectDate(_summary.workerId, selectStep.value!!, _skip.value, 100)
-            else
-                statisticsApi.getNaryads(_summary.workerId,  selectStep.value!!, selectedDay.value!!, _skip.value, 100)
+            val result = statisticsApi.getNaryads(_summary.workerId,  selectStep.value!!, selectedDay.value, _skip.value, 100)
             val list = mutableListOf<NaryadStatisitcResponseModel>()
             list.addAll(naryads.value!!)
             list.addAll(result.naryadList)
